@@ -44,7 +44,7 @@ void ku_pgfault_handler(char va){
 
 void ku_proc_exit(char pid){
 	pcbs[pid].isEnd = true;
-	fclose(pcbs.fd);
+	fclose(pcbs[pid].fd);
 	free(pcbs[pid].pgtable);
 	restProcess--;
 	return;
