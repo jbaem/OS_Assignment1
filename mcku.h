@@ -123,3 +123,12 @@ char *deleteLF(char *str) {
 	}
 	return result;
 }
+void PrintBinary2(int num)
+{	
+	if (num == 0)
+	{
+		return;
+	}	
+	PrintBinary2(num / 2);
+	printf("%d", num%2);
+}
