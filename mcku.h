@@ -54,18 +54,15 @@ void ku_proc_init(int nprocs, char *flist){
 		exit(0);
 	}
 
-	printf("\n %d",nProcess);
+	printf("\n%d",nProcess);
 	for(int i = 0; i < nProcess; ++i) {
 		printf("\nstart proc init");
 		char *procFile = NULL;
 		size_t len = 0;
-		ssize_t read;
+		getline(&procFile, &len, fp);
+
 		printf("%s",procFile);
-		read = getline(&procFile, &len, fp);
-		if(read == -1) {
-			printf("Error: file read 1");
-			exit(0);
-		}
+		
 		/*
 		if(procFile[strlen(procFile) - 1] != '\n') {
 			realloc(procFile, strlen(procFile) + 1);
@@ -80,7 +77,7 @@ void ku_proc_init(int nprocs, char *flist){
 		pcbs[i].isExit = false;
 
 		free(procFile);
-		printf("\nend proc init : %s", &procFile);
+		printf("\nend proc init : %s", procFile);
 	}
 	current = &pcbs[0];
 	ptbr = current->pgtable;
