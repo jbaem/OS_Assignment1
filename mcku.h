@@ -53,11 +53,11 @@ void ku_proc_init(int nprocs, char *flist){
 	FILE *fp = fopen(flist, "r");
 	
 	printf("\n %d",nProcess);
+	size_t len = 0;
 	for(int i = 0; i < nProcess; ++i) {
 		printf("\nstart proc init");
 		char *procFile = NULL;
-		/*
-		fgets(procFile, 20, fp); //여기 세그멘테이션 오류 뜸
+		fgets(procFile, &len, fp); //여기 세그멘테이션 오류 뜸
 		if(procFile[strlen(procFile) - 1] != '\n') {
 			printf("error - no new line");
 			exit(0);
@@ -72,7 +72,6 @@ void ku_proc_init(int nprocs, char *flist){
 
 		free(procFile);
 		printf("\nend proc init");
-		*/
 	}
  printf("!!!\n");
 	current = &pcbs[0];
