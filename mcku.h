@@ -56,10 +56,6 @@ void ku_proc_init(int nprocs, char *flist){
 	
 	printf("\nstart file open %s", flist);
 	FILE *fp = fopen(flist, "r");
-	if(fp == NULL) {
-		printf("error - file open");
-		exit(0);
-	}
 	printf("\nend file open");
 
 	char *procFile = NULL;
