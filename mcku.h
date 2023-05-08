@@ -11,8 +11,6 @@ struct pcb{
 	bool isEnd;
 };
 
-char *deleteLF(char * str); //delete Line Feed
-
 /*extern mcku.c*/
 extern struct pcb *current;
 extern char *ptbr;
@@ -112,6 +110,7 @@ void ku_proc_init(int nprocs, char *flist){
 	return;
 }
 
+/*delete Line Feed*/
 char *deleteLF(char *str) {
 	char * result = malloc(strlen(str) - 1);
 	strncpy(result, str, strlen(str) - 1);
@@ -123,13 +122,26 @@ char *deleteLF(char *str) {
 	}
 	return result;
 }
-void PrintBinary2(int num)
+
+void PrintBinary(int num)
 {	
-	if (num == 0)
-	{	
-		printf("\n");
-		return;
+	unsigned cnum = 1 << 31;
+	int check = 0;
+	while (cnum)
+	{
+		if (cnum & num)
+		{
+			printf("1");
+			check = 1;
+		}
+		else
+		{
+			if (check != 0)
+			{
+				printf("0");
+			}
+			
+		}
+		cnum = cnum >> 1;
 	}	
-	PrintBinary2(num / 2);
-	printf("%d-", num%2);
 }

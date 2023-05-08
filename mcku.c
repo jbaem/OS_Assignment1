@@ -86,7 +86,9 @@ void ku_run_cpu(void){
 			}
 
 			printf("%d: %d -> %d (%c)\n", current->pid, va, pa, sorf);
-			PrintBinary2((va&0xF0)>>4);
+			printf("\n-\n");
+			PrintBinary((va&0xF0)>>4);
+			printf("\n-\n");
 		}
 
 		kuos.sched(current->pid);
