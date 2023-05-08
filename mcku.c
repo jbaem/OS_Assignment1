@@ -97,13 +97,16 @@ void ku_run_cpu(void){
 }
 
 int main(int argc, char *argv[]){
+	printf("!");
 	/* System initialization */
 	ku_os_init();
-	
+	printf("!");
 	/* Per-process initialization */
+	printf("!");
 	ku_proc_init(atoi(argv[1]), argv[2]);
 	/* Process execution */
+	printf("!");
 	ku_run_cpu();
-	
+	printf("!");
 	return 0;
 }
