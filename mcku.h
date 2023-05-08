@@ -55,7 +55,6 @@ void ku_proc_init(int nprocs, char *flist){
 	}
 
 	printf("\n %d",nProcess);
-	size_t len = 0;
 	for(int i = 0; i < nProcess; ++i) {
 		printf("\nstart proc init");
 		char *procFile = NULL;
