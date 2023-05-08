@@ -81,7 +81,7 @@ void ku_proc_init(int nprocs, char *flist){
 		pcbs[i].isExit = false;
 
 		free(procFile);
-		printf("\nend proc init %d");
+		printf("\nend proc init");
 	}
 
 	current = &pcbs[0];
