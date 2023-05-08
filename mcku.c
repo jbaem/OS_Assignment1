@@ -97,10 +97,8 @@ int main(int argc, char *argv[]){
 	
 	/* Per-process initialization */
 	ku_proc_init(atoi(argv[1]), argv[2]);
-	
 	/* Process execution */
 	ku_run_cpu();
-	printf("\nrun_cpu success");
 	
 	return 0;
 }

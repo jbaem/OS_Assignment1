@@ -7,34 +7,34 @@ struct pcb{
 	FILE *fd;
 	char *pgtable;
 	
-	/* Add more fields if needed */
 	bool isEnd;
 	
 };
 
-char *deleteLF(char * str);
+char *deleteLF(char * str); //delete Line Feed
 
-// mcku.c 외부 변수
+/*extern mcku.c*/
 extern struct pcb *current;
 extern char *ptbr;
 
+/*global*/
 struct pcb* pcbs;
 int nProcess;
 int restProcess;
-// pid  1씩 올려서 current에 넣는 방식
+
 void ku_scheduler(char pid){
 	while(restProcess > 0) {
 		current = &pcbs[++pid % nProcess];
 		
-		if(currnt->isEnd) continue;
-		
-		ptbr = current->pgtable;
-		return;
+		/*current does*/
+		if(!(current->isEnd)) {
+			ptbr = current->pgtable;
+			return;
+		}
 	}
 	current = NULL;
 }
 
-// 이게 맞나
 void ku_pgfault_handler(char va){
 	int pt_index = (va & 0xF0) >> 4;
 	ptbr[pt_index] = 1;
@@ -55,7 +55,7 @@ void ku_proc_init(int nprocs, char *flist){
 	/*open text file*/
 	FILE *fp = fopen(flist, "r");
 	if(fp == NULL) {
-		printf("Error: file open 1");
+		printf("Error: process file open failed");
 		exit(0);
 	}
 
@@ -102,5 +102,10 @@ char *deleteLF(char *str) {
 	char * result = malloc(strlen(str) - 1);
 	strncpy(result, str, strlen(str) - 1);
 	
+	/*not delete Line Feed*/
+	if(strcmp(str, result) == 0) {
+		printf("Error: change string failed");
+		exit(0);
+	}
 	return result;
 }
