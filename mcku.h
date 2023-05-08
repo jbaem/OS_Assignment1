@@ -11,7 +11,7 @@ struct pcb{
 	bool isExit;
 };
 
-char *deleteNewLine(char * str);
+char *deleteLF(char * str);
 
 // mcku.c 외부 변수
 extern struct pcb *current;
