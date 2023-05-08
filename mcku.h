@@ -58,7 +58,7 @@ void ku_proc_init(int nprocs, char *flist){
 		printf("\nstart proc init");
 		char *procFile = NULL;
 		/*
-		fgets(procFile, 20, fp);
+		fgets(procFile, 20, fp); //여기 세그멘테이션 오류 뜸
 		if(procFile[strlen(procFile) - 1] != '\n') {
 			printf("error - no new line");
 			exit(0);
