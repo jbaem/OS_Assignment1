@@ -96,7 +96,8 @@ void ku_proc_init(int nprocs, char *flist){
 char *deleteNewLine(char *str) {
 	if(str[strlen(str) - 1] != '\n') return str;
 
-	char * newStr = realloc(str, strlen(str) - 1);
+	char * newStr = malloc(strlen(str) - 1);
+	strncpy(newStr, str, strlen(newStr));
 
 	return newStr;
 }
