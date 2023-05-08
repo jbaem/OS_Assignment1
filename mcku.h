@@ -2,8 +2,6 @@
 #include<stdbool.h>
 #define MAX_NAME 256
 
-char *appendNewLine(char * str);
-
 struct pcb{
 	char pid;
 	FILE *fd;
@@ -89,8 +87,4 @@ void ku_proc_init(int nprocs, char *flist){
 	ptbr = current->pgtable;
 
 	fclose(fp);
-}
-
-char *appendNewLine(char *str) {
-	realloc(str)
 }
