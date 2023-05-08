@@ -62,7 +62,8 @@ void ku_proc_init(int nprocs, char *flist){
 	}
 	printf("\nend file open");
 
-	for(int i = 0; i < nprocs; ++i) {
+	printf("\n %d",nProcess);
+	for(int i = 0; i < nProcess; ++i) {
 		printf("\nstart proc init %d" , i);
 		// 프로세스 파일명 읽어오기
 		char *procFile = NULL;
