@@ -69,7 +69,7 @@ void ku_proc_init(int nprocs, char *flist){
 		}
 
 		/*delete '\n' last index of string*/
-		if(procFile[strlen(str) - 1] == '\n') {
+		if(procFile[strlen(procFile) - 1] == '\n') {
 			procFile = deleteLF(procFile);
 		}
 		
