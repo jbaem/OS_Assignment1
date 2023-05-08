@@ -60,13 +60,18 @@ void ku_proc_init(int nprocs, char *flist){
 		/*read each text file's name*/
 		char *procFile = NULL;
 		size_t len = 128;
-		getline(&procFile, &len, fp);
-		
+		ssize_t read = getline(&procFile, &len, fp);
+		if(read == -1) {
+			printf("Error: file get line failed");
+			exit(0);
+		}
+
 		/*add '\n' last index of string*/
 		if(procFile[strlen(procFile) - 1] != '\n') {
 			realloc(procFile, strlen(procFile) + 1);
 			procFile[strlen(procFile) - 1] = '\n';
 		}
+		
 		/*put elements in pcbs*/
 		pcbs[i].fd = fopen(procFile, "r");
 		pcbs[i].pid = i;
