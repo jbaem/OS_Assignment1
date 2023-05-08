@@ -60,17 +60,13 @@ void ku_proc_init(int nprocs, char *flist){
 		char *procFile = NULL;
 		size_t len = 128;
 		getline(&procFile, &len, fp);
-
-		printf("%s", procFile);
-		
-		/*
+		printf("%s\n", procFile);
 		if(procFile[strlen(procFile) - 1] != '\n') {
 			realloc(procFile, strlen(procFile) + 1);
 			procFile[strlen(procFile) - 1] = '\n';
 		}
-		*/
-		if(procFile[strlen(procFile) - 1] != '\n') printf("Error: not append new line");
-
+		printf("%s\n", procFile);
+		
 		pcbs[i].fd = fopen(procFile, "r");
 		pcbs[i].pid = i;
 		pcbs[i].pgtable = malloc(sizeof(pcbs->pgtable) *16);
