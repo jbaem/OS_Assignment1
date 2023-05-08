@@ -24,8 +24,9 @@ int restProcess;
 
 void ku_scheduler(char pid){
 	while(restProcess > 0) {
+		current = &pcbs[++pid % nProcess];
 		/*current is not null*/
-		if(current = &pcbs[++pid % nProcess]) {
+		if(current) {
 			ptbr = current->pgtable;
 			return;
 		}
@@ -44,7 +45,7 @@ void ku_proc_exit(char pid){
 	fclose(pcbs[pid].fd);
 	free(pcbs[pid].pgtable);
 	free(pcbs[pid].freeList);
-	&pcbs[pid] = 0x0;
+	&pcbs[pid] = 0;
 
 	restProcess--;
 	if(!restProcess) {
