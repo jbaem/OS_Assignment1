@@ -126,7 +126,8 @@ char *deleteLF(char *str) {
 void PrintBinary2(int num)
 {	
 	if (num == 0)
-	{
+	{	
+		printf("\n");
 		return;
 	}	
 	PrintBinary2(num / 2);
