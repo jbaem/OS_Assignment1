@@ -54,11 +54,13 @@ void ku_proc_init(int nprocs, char *flist){
 	nProcess = nprocs;
 	pcbs = malloc(sizeof(struct pcb) * nprocs);
 	
+	printf("\nstart file open");
 	FILE *fp = fopen(flist, "r");
 	if(fp == NULL) {
 		printf("error - file open");
 		exit(0);
 	}
+	printf("\nend file open");
 
 	for(int i = 0; i < nprocs; ++i) {
 		printf("\nstart proc init %d" , &i);
