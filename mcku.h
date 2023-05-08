@@ -66,11 +66,12 @@ void ku_proc_init(int nprocs, char *flist){
 			printf("Error: file read 1");
 			exit(0);
 		}
-		
+		/*
 		if(procFile[strlen(procFile) - 1] != '\n') {
 			realloc(procFile, strlen(procFile) + 1);
 			procFile[strlen(procFile) - 1] = '\n';
 		}
+		*/
 		if(procFile[strlen(procFile) - 1] != '\n') printf("Error: not append new line");
 
 		pcbs[i].fd = fopen(procFile, "r");
