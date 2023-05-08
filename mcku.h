@@ -66,21 +66,18 @@ void ku_proc_init(int nprocs, char *flist){
 			procFile[strlen(procFile) - 1] = '\n';
 		}
 		
-		printf("!\n");
 		pcbs[i].fd = fopen(procFile, "r");
-		printf("!!\n");
 		pcbs[i].pid = i;
-		printf("!!!\n");
 		pcbs[i].pgtable = malloc(sizeof(pcbs->pgtable) *16);
-		printf("!!!!\n");
 		pcbs[i].isExit = false;
-		printf("!!!!!\n");
 		
 		free(procFile);
-		printf("\nend proc init : %s", procFile);
 	}
-	current = &pcbs[0];
-	ptbr = current->pgtable;
 
+	/*initializing current*/
+	current = &pcbs[0];
+	printf("!");
+	ptbr = current->pgtable;
+	printf("!!!!!");
 	fclose(fp);
 }
