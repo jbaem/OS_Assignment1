@@ -63,7 +63,7 @@ void ku_proc_init(int nprocs, char *flist){
 	printf("\nend file open");
 
 	for(int i = 0; i < nprocs; ++i) {
-		printf("\nstart proc init %d" , &i);
+		printf("\nstart proc init %d" , i);
 		// 프로세스 파일명 읽어오기
 		char *procFile = NULL;
 		fgets(procFile, MAX_NAME, fp);
@@ -80,7 +80,7 @@ void ku_proc_init(int nprocs, char *flist){
 		pcbs[i].isExit = false;
 
 		free(procFile);
-		printf("\nend proc init %d" ,&i);
+		printf("\nend proc init %d" ,i);
 	}
 
 	current = &pcbs[0];
