@@ -1,7 +1,7 @@
 #include<string.h>
 #include<stdbool.h>
 #define MAX_NAME_LENGTH 256
-#define PTE_COUNT 16;
+#define PTE_COUNT 16
 
 struct pcb{
 	char pid;
@@ -86,7 +86,7 @@ void ku_proc_init(int nprocs, char *flist){
 		pcbs[pi].pid = pi;
 		pcbs[pi].pgtable = malloc(sizeof(pcbs->pgtable) * PTE_COUNT);
 		pcbs[pi].freeList = malloc(sizeof(bool) * PTE_COUNT);
-		for(int i = 0; i < PTE_COUNT; ++i) pcbs[pi].freeList = true;
+		for(int i = 0; i < PTE_COUNT; ++i) pcbs[pi].freeList[i] = true;
 
 		/*free character pointer*/
 		free(procFile);
