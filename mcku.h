@@ -23,9 +23,9 @@ int nProcess;
 int restProcess;
 // pid  1씩 올려서 current에 넣는 방식
 void ku_scheduler(char pid){
-	printf("\npid\n");
+	printf("\npid:%c\n", pid);
 	do {
-		current = &pbcs[++pid % nProcess];
+		current = &pcbs[++pid % nProcess];
 		ptbr = current->pgtable;
 	} while(current->isEnd && restProcess > 0);
 	
@@ -77,7 +77,7 @@ void ku_proc_init(int nprocs, char *flist){
 		pcbs[i].fd = fopen(procFile, "r");
 		pcbs[i].pid = i;
 		pcbs[i].pgtable = malloc(sizeof(pcbs->pgtable) *16);
-		pcbs[i].isExit = false;
+		pcbs[i].isEnd = false;
 		
 		/*free character pointer*/
 		free(procFile);
