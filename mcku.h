@@ -94,10 +94,10 @@ void ku_proc_init(int nprocs, char *flist){
 }
 
 char *deleteNewLine(char *str) {
-	if(str[strlen(str) - 1] != '\n') return str;
-
+	if(str[strlen(str) - 2] != '\n') return str;
+	printf("\nstr : %s", str);
 	char * newStr = malloc(strlen(str) - 1);
 	strncpy(newStr, str, strlen(newStr));
-
+	printf("\nnewStr : %s", newStr);
 	return newStr;
 }
