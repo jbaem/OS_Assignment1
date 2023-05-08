@@ -96,10 +96,10 @@ void ku_proc_init(int nprocs, char *flist){
 char *appendNewLine(char *str) {
 	if(str[strlen(str) - 1] == '\n') return str;
 	
-	char * newStr = malloc(strlen(str) + 2);
+	char * newStr = malloc(strlen(str) + 1);
 	
 	strcpy(newStr, str);
-	newStr[strlen(newStr) - 1] = '\n';
+	newStr[strlen(newStr)] = '\n';
 
 	return newStr;
 }
