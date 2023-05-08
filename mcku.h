@@ -23,13 +23,15 @@ int nProcess;
 int restProcess;
 // pid  1씩 올려서 current에 넣는 방식
 void ku_scheduler(char pid){
-	printf("\npid:%c\n", pid);
-	do {
+	while(restProcess > 0) {
 		current = &pcbs[++pid % nProcess];
+		
+		if(currnt->isEnd) continue;
+		
 		ptbr = current->pgtable;
-	} while(current->isEnd && restProcess > 0);
-	
-	if(restProcess == 0) current = NULL;
+		return;
+	}
+	current = NULL;
 }
 
 // 이게 맞나
@@ -41,6 +43,8 @@ void ku_pgfault_handler(char va){
 
 void ku_proc_exit(char pid){
 	pcbs[pid].isEnd = true;
+	fclose(pcbs.fd);
+	free(pcbs[pid].pgtable);
 	restProcess--;
 }
 
