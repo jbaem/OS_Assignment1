@@ -97,7 +97,7 @@ char *deleteNewLine(char *str) {
 	if(str[strlen(str) - 1] != '\n') return str;
 	printf("\nstr : %s", str);
 	char * newStr = malloc(strlen(str) - 1);
-	strncpy(newStr, str, strlen(newStr));
+	strncpy(newStr, str, strlen(str) - 1);
 	printf("\nnewStr : %s", newStr);
 	return newStr;
 }
