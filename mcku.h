@@ -67,10 +67,12 @@ void ku_proc_init(int nprocs, char *flist){
 		}
 
 		/*delete '\n' last index of string*/
+		printf("%s1", procFile);
 		if(procFile[strlen(procFile) - 1] == '\n') {
 			char * temp = realloc(procFile, strlen(procFile) - 1);
 			procFile = temp;
 		}
+		printf("%s2", procFile);
 
 		/*put elements in pcbs*/
 		pcbs[i].fd = fopen(procFile, "r");
@@ -88,5 +90,6 @@ void ku_proc_init(int nprocs, char *flist){
 
 	/*close first file*/
 	fclose(fp);
+	printf("file close\n");
 	return;
 }
