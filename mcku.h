@@ -67,7 +67,7 @@ void ku_proc_init(int nprocs, char *flist){
 		printf("\nstart proc init");
 		
 		char *procFile = NULL;
-		fgets(procFile, MAX_NAME, fp);
+		fgets(procFile, 20, fp);
 		if(procFile[strlen(procFile) - 1] != '\n') {
 			printf("error - no new line");
 			exit(0);
