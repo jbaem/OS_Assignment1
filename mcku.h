@@ -22,14 +22,14 @@ int nProcess;
 
 // pid  1씩 올려서 current에 넣는 방식
 void ku_scheduler(char pid){
-	
+	int count = 0;
 	do {
-		current = &ptbr[++pid % processLength];
+		current = &ptbr[++pid % nProcess];
 		ptbr = current->pgtable;
-	} while(current -> isExit && count++ < processLength);
+	} while(current -> isExit && count++ < nProcess);
 	
 	// 만약 모든 프로세스가 exit 됐다면 프로그램 종료
-	if(count >= processLength) {
+	if(count >= nProcess) {
 		exit(0);
 	}
 }
