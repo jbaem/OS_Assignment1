@@ -68,10 +68,11 @@ void ku_proc_init(int nprocs, char *flist){
 
 		/*add '\n' last index of string*/
 		if(procFile[strlen(procFile) - 1] != '\n') {
-			realloc(procFile, strlen(procFile) + 1);
+			char * temp = realloc(procFile, strlen(procFile) + 1);
+			procFile = temp;
 			procFile[strlen(procFile) - 1] = '\n';
 		}
-		
+
 		/*put elements in pcbs*/
 		pcbs[i].fd = fopen(procFile, "r");
 		pcbs[i].pid = i;
