@@ -11,6 +11,8 @@ struct pcb{
 	bool isEnd;
 };
 
+char *deleteLF(char * str);
+
 /*extern mcku.c*/
 extern struct pcb *current;
 extern char *ptbr;
