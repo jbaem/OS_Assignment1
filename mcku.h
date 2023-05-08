@@ -69,10 +69,10 @@ void ku_proc_init(int nprocs, char *flist){
 		}
 
 		/*delete '\n' last index of string*/
-		printf("\n%s1", procFile);
-		procFile = deleteNewLine(procFile);
-		printf("\n%s2", procFile);
-
+		if(str[strlen(str) - 1] == '\n') {
+			procFile = deleteLF(procFile);
+		}
+		
 		/*put elements in pcbs*/
 		pcbs[i].fd = fopen(procFile, "r");
 		pcbs[i].pid = i;
@@ -93,11 +93,9 @@ void ku_proc_init(int nprocs, char *flist){
 	return;
 }
 
-char *deleteNewLine(char *str) {
-	if(str[strlen(str) - 1] != '\n') return str;
-	printf("\nstr : %s", str);
-	char * newStr = malloc(strlen(str) - 1);
-	strncpy(newStr, str, strlen(str) - 1);
-	printf("\nnewStr : %s", newStr);
-	return newStr;
+char *deleteLF(char *str) {
+	char * result = malloc(strlen(str) - 1);
+	strncpy(result, str, strlen(str) - 1);
+	
+	return result;
 }
