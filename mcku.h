@@ -60,7 +60,10 @@ void ku_proc_init(int nprocs, char *flist){
 		// 프로세스 파일명 읽어오기
 		char *procFile = NULL;
 		fgets(procFile, MAX_NAME, fp);
-		
+		if(procFile[strlen(procFile) - 1] != '\n') {
+			printf("error - no new line");
+			exit(0);
+		}
 		//개행문자 지워주는 과정
 		//processFileName = deleteNewLine(processFileName);
 
