@@ -19,7 +19,6 @@ extern char *ptbr;
 
 struct pcb* pcbs;
 int nProcess;
-
 // pid  1씩 올려서 current에 넣는 방식
 void ku_scheduler(char pid){
 	int count = 0;
@@ -49,25 +48,21 @@ void ku_proc_exit(char pid){
 
 
 void ku_proc_init(int nprocs, char *flist){
-	printf("\nstart proc init");
-
 	nProcess = nprocs;
 	pcbs = malloc(sizeof(struct pcb) * nprocs);
-	
-	printf("\nstart file open %s", flist);
+	/*
 	FILE *fp = fopen(flist, "r");
-	printf("\nend file open");
 
 	char *procFile = NULL;
 	fgets(procFile, 20, fp);
+	*/
 	printf("\n%s", procFile);
 
-	/*
 	printf("\n %d",nProcess);
 	for(int i = 0; i < nProcess; ++i) {
 		printf("\nstart proc init");
-		
-//		char *procFile = NULL;
+		/*
+		char *procFile = NULL;
 		fgets(procFile, 20, fp);
 		if(procFile[strlen(procFile) - 1] != '\n') {
 			printf("error - no new line");
@@ -83,11 +78,11 @@ void ku_proc_init(int nprocs, char *flist){
 
 		free(procFile);
 		printf("\nend proc init");
+		*/
 	}
-
+ printf("!!!\n");
 	current = &pcbs[0];
 	ptbr = current->pgtable;
-	*/
 }
 
 // 개행문자가 들어있으면 지우고 아니면 그냥 리턴
