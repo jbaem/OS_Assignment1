@@ -72,7 +72,7 @@ void ku_proc_init(int nprocs, char *flist){
 		pcbs[i].pgtable = malloc(sizeof(pcbs->pgtable) *16);
 		pcbs[i].isExit = false;
 
-		free(processFileName);
+		free(procFile);
 	}
 
 	current = &pcbs[0];
