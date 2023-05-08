@@ -70,7 +70,7 @@ void ku_pgfault_handler(char va) {
 		pfn = current->pgtable[vpn];
 	}
 }
-
+//
 
 void ku_proc_exit(char pid){
 	/*free pcbs[pid]*/
