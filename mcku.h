@@ -11,6 +11,8 @@ struct pcb{
 	bool isExit;
 };
 
+char *appendNewLine(char * str);
+
 // mcku.c 외부 변수
 extern struct pcb *current;
 extern char *ptbr;
@@ -68,11 +70,7 @@ void ku_proc_init(int nprocs, char *flist){
 
 		/*delete '\n' last index of string*/
 		printf("%s1", procFile);
-		if(procFile[strlen(procFile) - 1] == '\n') {
-			char * temp = realloc(procFile, strlen(procFile) - 2);
-			free(procFile);
-			procFile = temp;
-		}
+		procFile = appendNewLine(procFile);
 		printf("%s2", procFile);
 
 		/*put elements in pcbs*/
@@ -93,4 +91,15 @@ void ku_proc_init(int nprocs, char *flist){
 	fclose(fp);
 	printf("file close\n");
 	return;
+}
+
+char *appendNewLine(char *str) {
+	if(str[strlen(str) - 1] == '\n') return str;
+	
+	char * newStr = malloc(strlen(str) + 1);
+	
+	strcpy(newStr, str);
+	newStr[strlen(newStr) - 1] = '\n';
+
+	return newStr;
 }
