@@ -17,12 +17,14 @@ char *deleteLF(char * str);
 extern struct pcb *current;
 extern char *ptbr;
 
-/*global*/
-struct pcb* pcbs;
-char *freeList;
-
+/*process*/
 int nProcess;
 int restProcess;
+struct pcb* pcbs;
+
+/*free list*/
+char *freeList;
+char freeIndex;
 
 void ku_scheduler(char pid){
 	/*find remain jobs*/
@@ -44,6 +46,12 @@ void ku_scheduler(char pid){
 
 void ku_pgfault_handler(char va) {
 	int pt_index = (va & 0xF0) >> 4;
+	/*
+	TODO: FREE LIST
+	어떻게 할까?
+	
+	
+	*/
 	*(ptbr + pt_index) = 1;
 	return;
 }
@@ -77,6 +85,7 @@ void ku_proc_init(int nprocs, char *flist){
 	restProcess = nprocs;
 	pcbs = malloc(sizeof(struct pcb) * nprocs);
 	freeList = malloc(FREE_LIST_SIZE);
+	freeIndex = 0;
 
 	for(int pi = 0; pi < nProcess; ++pi) {
 		/*read each text file's name*/
@@ -123,27 +132,4 @@ char *deleteLF(char *str) {
 		exit(0);
 	}
 	return result;
-}
-
-void PrintBinary(int num)
-{	
-	unsigned cnum = 1 << 31;
-	int check = 0;
-	while (cnum)
-	{
-		if (cnum & num)
-		{
-			printf("1");
-			check = 1;
-		}
-		else
-		{
-			if (check != 0)
-			{
-				printf("0");
-			}
-			
-		}
-		cnum = cnum >> 1;
-	}	
 }
