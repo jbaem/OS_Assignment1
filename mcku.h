@@ -61,6 +61,7 @@ void ku_proc_init(int nprocs, char *flist){
 		char *procFile = NULL;
 		size_t len = 0;
 		ssize_t read;
+		printf("%s",procFile);
 		read = getline(&procFile, &len, fp);
 		if(read == -1) {
 			printf("Error: file read 1");
