@@ -69,7 +69,7 @@ void ku_proc_init(int nprocs, char *flist){
 		/*delete '\n' last index of string*/
 		printf("%s1", procFile);
 		if(procFile[strlen(procFile) - 1] == '\n') {
-			char * temp = realloc(procFile, strlen(procFile) - 1);
+			char * temp = realloc(procFile, strlen(procFile) - 2);
 			procFile = temp;
 		}
 		printf("%s2", procFile);
