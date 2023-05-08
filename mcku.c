@@ -66,7 +66,6 @@ void ku_run_cpu(void){
 				break;
 			}
 			va = addr & 0xFF;
-			printf("%d",va);
 			pa = ku_traverse(va);
 
 			if(pa >= 0){
