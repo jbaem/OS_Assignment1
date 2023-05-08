@@ -60,7 +60,7 @@ void ku_pgfault_handler(char va) {
 
 		/*physical memory*/
 		fseek(current->fd, vpn * PAGE_SIZE, SEEK_SET);
-		fread(physicalMemory, pfn * PAGE_SIZE, PAGE_SIZE, 1, current->fd);
+		fread(physicalMemory + pfn * PAGE_SIZE, PAGE_SIZE, 1, current->fd);
 
 		/*pgtable update*/
 		current->pgtable[vpn] = pfn;
