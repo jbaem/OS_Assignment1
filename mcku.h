@@ -32,6 +32,7 @@ void ku_scheduler(char pid){
 			return;
 		}
 	}
+	if(!restProcess) current = NULL;
 }
 
 void ku_pgfault_handler(char va) {
