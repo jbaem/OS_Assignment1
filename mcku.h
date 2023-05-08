@@ -24,8 +24,8 @@ int nProcess;
 void ku_scheduler(char pid){
 	int count = 0;
 	do {
-		current = &ptbr[++pid % nProcess];
-		ptbr = current->pgtable;
+		//current = &ptbr[++pid % nProcess];
+		//ptbr = current->pgtable;
 	} while(current -> isExit && count++ < nProcess);
 	
 	// 만약 모든 프로세스가 exit 됐다면 프로그램 종료
