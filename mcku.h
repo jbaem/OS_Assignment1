@@ -19,7 +19,7 @@ extern char *ptbr;
 
 /*global*/
 struct pcb* pcbs;
-struct pcb* pcbEnd = 0;
+struct pcb pcbEnd = 0;
 int nProcess;
 int restProcess;
 
@@ -48,7 +48,7 @@ void ku_proc_exit(char pid){
 	fclose(pcbs[pid].fd);
 	free(pcbs[pid].pgtable);
 	free(pcbs[pid].freeList);
-	pcbs[pid] = pcbEnd;
+	&pcbs[pid] = pcbEnd;
 	
 	restProcess--;
 	if(!restProcess) {
