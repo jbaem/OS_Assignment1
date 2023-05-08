@@ -79,7 +79,7 @@ void ku_proc_init(int nprocs, char *flist){
 		pcbs[i].isExit = false;
 
 		free(procFile);
-		printf("\nend proc init : %s", procFile);
+		printf("\nend proc init : %s", &procFile);
 	}
 	current = &pcbs[0];
 	ptbr = current->pgtable;
