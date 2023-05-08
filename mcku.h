@@ -72,8 +72,6 @@ void ku_proc_init(int nprocs, char *flist){
 			procFile[strlen(procFile) - 1] = '\n';
 		}
 		if(procFile[strlen(procFile) - 1] != '\n') printf("Error: not append new line");
-		//개행문자 지워주는 과정
-		//processFileName = deleteNewLine(processFileName);
 
 		pcbs[i].fd = fopen(procFile, "r");
 		pcbs[i].pid = i;
@@ -81,7 +79,7 @@ void ku_proc_init(int nprocs, char *flist){
 		pcbs[i].isExit = false;
 
 		free(procFile);
-		printf("\nend proc init");
+		printf("\nend proc init : %s", procFile);
 	}
 	current = &pcbs[0];
 	ptbr = current->pgtable;
