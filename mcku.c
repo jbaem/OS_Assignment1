@@ -93,6 +93,7 @@ void ku_run_cpu(void){
 }
 
 int main(int argc, char *argv[]){
+	printf("start main");
 	/* System initialization */
 	ku_os_init();
 	printf("\nos_init success");
