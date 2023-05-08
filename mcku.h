@@ -2,7 +2,7 @@
 #include<stdbool.h>
 #define MAX_NAME 256
 
-char *readLine(FILE *file);
+char *appendNewLine(char * str);
 
 struct pcb{
 	char pid;
@@ -70,9 +70,9 @@ void ku_proc_init(int nprocs, char *flist){
 		}
 		
 		if(procFile[strlen(procFile) - 1] != '\n') {
-			printf("error - no new line");
-			exit(0);
+			procFile = appendNewLine(procFile);
 		}
+		if(procFile[strlen(procFile) - 1] != '\n') printf("Error: not append new line");
 		//개행문자 지워주는 과정
 		//processFileName = deleteNewLine(processFileName);
 
@@ -88,4 +88,8 @@ void ku_proc_init(int nprocs, char *flist){
 	ptbr = current->pgtable;
 
 	fclose(fp);
+}
+
+char *appendNewLine(char *str) {
+	
 }
