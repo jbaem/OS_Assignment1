@@ -57,6 +57,7 @@ void ku_proc_exit(char pid){
 	restProcess--;
 	if(!restProcess) {
 		free(pcbs);
+		printf("\nfree all\n");
 	}
 	return;
 }
