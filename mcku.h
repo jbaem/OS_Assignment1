@@ -50,8 +50,8 @@ void ku_proc_exit(char pid){
 void ku_proc_init(int nprocs, char *flist){
 	nProcess = nprocs;
 	pcbs = malloc(sizeof(struct pcb) * nprocs);
-	/*
 	FILE *fp = fopen(flist, "r");
+	/*
 
 	char *procFile = NULL;
 	fgets(procFile, 20, fp);
