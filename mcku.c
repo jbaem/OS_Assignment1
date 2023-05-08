@@ -95,7 +95,7 @@ void ku_run_cpu(void){
 int main(int argc, char *argv[]){
 	/* System initialization */
 	ku_os_init();
-	
+	printf("\n!@#!@#");
 	/* Per-process initialization */
 	ku_proc_init(atoi(argv[1]), argv[2]);
 	printf("\n!!");
