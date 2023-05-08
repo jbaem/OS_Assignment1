@@ -53,17 +53,11 @@ void ku_proc_init(int nprocs, char *flist){
 	
 	FILE *fp = fopen(flist, "r");
 	
-	char *procFile = NULL;
-	fgets(procFile, 20, fp);
-	/*
-	printf("\n%s", procFile);
-	*/
-
 	printf("\n %d",nProcess);
 	for(int i = 0; i < nProcess; ++i) {
 		printf("\nstart proc init");
-		/*
 		char *procFile = NULL;
+		/*
 		fgets(procFile, 20, fp);
 		if(procFile[strlen(procFile) - 1] != '\n') {
 			printf("error - no new line");
