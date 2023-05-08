@@ -54,8 +54,8 @@ void ku_proc_init(int nprocs, char *flist){
 	FILE *fp = fopen(flist, "r");
 	
 	char *procFile = NULL;
-	/*
 	fgets(procFile, 20, fp);
+	/*
 	printf("\n%s", procFile);
 	*/
 
