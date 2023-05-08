@@ -57,8 +57,8 @@ void ku_run_cpu(void){
     char sorf;
 	int addr, pa, i;
 	printf("asdasd-> %c\n", current->pid);
-	printf("%c", va);
 	do{
+		printf("???");
 		if(!current)
 			exit(0);
 
