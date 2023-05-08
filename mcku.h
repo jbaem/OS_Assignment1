@@ -1,14 +1,14 @@
 #include<string.h>
 #include<stdbool.h>
-#define MAX_NAME 256
+#define MAX_NAME_LENGTH 256
+#define PTE_COUNT 16;
 
 struct pcb{
 	char pid;
 	FILE *fd;
 	char *pgtable;
 	
-	bool isEnd;
-	
+	bool *freeList;
 };
 
 char *deleteLF(char * str); //delete Line Feed
@@ -26,16 +26,15 @@ void ku_scheduler(char pid){
 	while(restProcess > 0) {
 		current = &pcbs[++pid % nProcess];
 		
-		/*current does*/
-		if(!(current->isEnd)) {
+		/*current is not null*/
+		if(current) {
 			ptbr = current->pgtable;
 			return;
 		}
 	}
-	current = NULL;
 }
 
-void ku_pgfault_handler(char va){
+void ku_pgfault_handler(char va) {
 	int pt_index = (va & 0xF0) >> 4;
 	ptbr[pt_index] = 1;
 	return;
@@ -43,10 +42,13 @@ void ku_pgfault_handler(char va){
 
 
 void ku_proc_exit(char pid){
-	pcbs[pid].isEnd = true;
+	/*free pcbs[pid]*/
 	fclose(pcbs[pid].fd);
 	free(pcbs[pid].pgtable);
-	restProcess--;
+	free(pcbs[pid].freeList);
+	pcbs[pid] = NULL;
+
+	restProcess--;	
 	return;
 }
 
@@ -64,10 +66,10 @@ void ku_proc_init(int nprocs, char *flist){
 	restProcess = nprocs;
 	pcbs = malloc(sizeof(struct pcb) * nprocs);
 	
-	for(int i = 0; i < nProcess; ++i) {
+	for(int pi = 0; pi < nProcess; ++i) {
 		/*read each text file's name*/
 		char *procFile = NULL;
-		size_t len = 128;
+		size_t len = MAX_NAME_LENGTH;
 		ssize_t read = getline(&procFile, &len, fp);
 		if(read == -1) {
 			printf("Error: file get line failed");
@@ -80,11 +82,12 @@ void ku_proc_init(int nprocs, char *flist){
 		}
 		
 		/*put elements in pcbs*/
-		pcbs[i].fd = fopen(procFile, "r");
-		pcbs[i].pid = i;
-		pcbs[i].pgtable = malloc(sizeof(pcbs->pgtable) *16);
-		pcbs[i].isEnd = false;
-		
+		pcbs[pi].fd = fopen(procFile, "r");
+		pcbs[pi].pid = pi;
+		pcbs[pi].pgtable = malloc(sizeof(pcbs->pgtable) * PTE_COUNT);
+		pcbs[pi].freeList = malloc(sizeof(bool) * PTE_COUNT);
+		for(int i = 0; i < PTE_COUNT; ++i) pcbs[pi].freeList = true;
+
 		/*free character pointer*/
 		free(procFile);
 	}
