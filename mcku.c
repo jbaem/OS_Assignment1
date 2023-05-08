@@ -85,11 +85,6 @@ void ku_run_cpu(void){
 			}
 
 			printf("%d: %d -> %d (%c)\n", current->pid, va, pa, sorf);
-			/*
-			printf("\n-\n");
-			PrintBinary((va&0xF0)>>4);
-			printf("\n-\n");
-			*/
 		}
 
 		kuos.sched(current->pid);
@@ -97,16 +92,13 @@ void ku_run_cpu(void){
 }
 
 int main(int argc, char *argv[]){
-	printf("!");
 	/* System initialization */
 	ku_os_init();
-	printf("!");
+	
 	/* Per-process initialization */
-	printf("!");
 	ku_proc_init(atoi(argv[1]), argv[2]);
 	/* Process execution */
-	printf("!");
 	ku_run_cpu();
-	printf("!");
+	
 	return 0;
 }

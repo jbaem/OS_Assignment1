@@ -1,11 +1,8 @@
 #include<string.h>
 #include<stdbool.h>
-
-#define PAGE_SIZE 16
+#define MAX_NAME_LENGTH 256
 #define PTE_COUNT 16
 #define FREE_LIST_SIZE 64
-#define MAX_NAME_LENGTH 256
-#define PHYSICAL_MEMORY 1024
 
 struct pcb{
 	char pid;
@@ -22,9 +19,7 @@ extern char *ptbr;
 
 /*global*/
 struct pcb* pcbs;
-int *freeList;
-int freeIndex;
-char *physicalMemory;
+char *freeList;
 
 int nProcess;
 int restProcess;
@@ -48,29 +43,11 @@ void ku_scheduler(char pid){
 }
 
 void ku_pgfault_handler(char va) {
-	if(freeIndex == FREE_LIST_SIZE) return;
-
-	int vpn = (va & 0xF0) >> 4;
-	int pfn = 0;
-
-	/*allocate page*/
-	if(current->pgtable[vpn] == 0) {
-		/*free list -> PFN*/
-		pfn = freeList[freeIndex++];
-
-		/*physical memory*/
-		fseek(current->fd, vpn * PAGE_SIZE, SEEK_SET);
-		fread(physicalMemory + pfn * PAGE_SIZE, PAGE_SIZE, 1, current->fd);
-
-		/*pgtable update*/
-		current->pgtable[vpn] = pfn;
-	}
-	else {
-		/*pte already exist*/
-		pfn = current->pgtable[vpn];
-	}
+	int pt_index = (va & 0xF0) >> 4;
+	*(ptbr + pt_index) = 1;
+	return;
 }
-//
+
 
 void ku_proc_exit(char pid){
 	/*free pcbs[pid]*/
@@ -100,8 +77,6 @@ void ku_proc_init(int nprocs, char *flist){
 	restProcess = nprocs;
 	pcbs = malloc(sizeof(struct pcb) * nprocs);
 	freeList = malloc(FREE_LIST_SIZE);
-	freeIndex = 0;
-	physicalMemory = malloc(sizeof(char) * PHYSICAL_MEMORY);
 
 	for(int pi = 0; pi < nProcess; ++pi) {
 		/*read each text file's name*/
