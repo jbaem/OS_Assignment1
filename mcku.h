@@ -2,7 +2,7 @@
 #include<stdbool.h>
 #define MAX_NAME 256
 
-char *deleteNewLine(char *str);
+char *readLine(FILE *file);
 
 struct pcb{
 	char pid;
@@ -51,13 +51,24 @@ void ku_proc_init(int nprocs, char *flist){
 	pcbs = malloc(sizeof(struct pcb) * nprocs);
 	
 	FILE *fp = fopen(flist, "r");
-	
+	if(fp == NULL) {
+		printf("Error: file open 1");
+		exit(0);
+	}
+
 	printf("\n %d",nProcess);
 	size_t len = 0;
 	for(int i = 0; i < nProcess; ++i) {
 		printf("\nstart proc init");
 		char *procFile = NULL;
-		fgets(procFile, &len, fp); //여기 세그멘테이션 오류 뜸
+		size_t len = 0;
+		ssize_t read;
+		read = getline(&procFile, &len, fp);
+		if(read == -1) {
+			printf("Error: file read 1");
+			exit(0);
+		}
+		
 		if(procFile[strlen(procFile) - 1] != '\n') {
 			printf("error - no new line");
 			exit(0);
@@ -73,18 +84,8 @@ void ku_proc_init(int nprocs, char *flist){
 		free(procFile);
 		printf("\nend proc init");
 	}
- printf("!!!\n");
 	current = &pcbs[0];
 	ptbr = current->pgtable;
-}
 
-// 개행문자가 들어있으면 지우고 아니면 그냥 리턴
-char *deleteNewLine(char *str) {
-	if(str[strlen(str) - 1] != '\n') return str;
-
-	char *newStr = (char *)malloc(strlen(str) - 1);
-
-	for(int i=0; i<strlen(str) - 1; ++i) newStr[i] = str[i];
-
-	return newStr;
+	fclose(fp);
 }
