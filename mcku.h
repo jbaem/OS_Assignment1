@@ -41,12 +41,12 @@ void ku_pgfault_handler(char va) {
 
 
 void ku_proc_exit(char pid){
+	printf("free : %c\n", pid);
 	/*free pcbs[pid]*/
 	fclose(pcbs[pid].fd);
 	free(pcbs[pid].pgtable);
 	free(pcbs[pid].freeList);
 	&pcbs[pid] = 0;
-
 	restProcess--;
 	if(!restProcess) {
 		free(pcbs);
