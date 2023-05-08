@@ -8,7 +8,8 @@ struct pcb{
 	char *pgtable;
 	
 	/* Add more fields if needed */
-	bool isExit;
+	bool isEnd;
+	
 };
 
 char *deleteLF(char * str);
@@ -19,19 +20,16 @@ extern char *ptbr;
 
 struct pcb* pcbs;
 int nProcess;
+int restProcess;
 // pid  1씩 올려서 current에 넣는 방식
 void ku_scheduler(char pid){
-	int count = 0;
-	
+	printf("\npid\n");
 	do {
-		current = &ptbr[++pid % nProcess];
+		current = &pbcs[++pid % nProcess];
 		ptbr = current->pgtable;
-	} while(current -> isExit && count++ < nProcess);
+	} while(current->isEnd && restProcess > 0);
 	
-	// 만약 모든 프로세스가 exit 됐다면 프로그램 종료
-	if(count >= nProcess) {
-		exit(0);
-	}
+	if(restProcess == 0) current = NULL;
 }
 
 // 이게 맞나
@@ -42,7 +40,8 @@ void ku_pgfault_handler(char va){
 
 
 void ku_proc_exit(char pid){
-	pcbs[pid].isExit = true;
+	pcbs[pid].isEnd = true;
+	restProcess--;
 }
 
 
@@ -56,6 +55,7 @@ void ku_proc_init(int nprocs, char *flist){
 
 	/*allocate pcbs for nprocs*/
 	nProcess = nprocs;
+	restProcess = nprocs;
 	pcbs = malloc(sizeof(struct pcb) * nprocs);
 	
 	for(int i = 0; i < nProcess; ++i) {

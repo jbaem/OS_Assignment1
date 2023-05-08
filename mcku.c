@@ -57,7 +57,6 @@ void ku_run_cpu(void){
     char sorf;
 	int addr, pa, i;
 	do{
-		printf("???");
 		if(!current)
 			exit(0);
 
