@@ -81,8 +81,7 @@ void ku_proc_init(int nprocs, char *flist){
 	current = &pcbs[0];
 	ptbr = current->pgtable;
 
-	printf("\nabbbbb");
 	/*close first file*/
 	fclose(fp);
-	printf("\ndddddd");
+	return;
 }
