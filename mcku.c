@@ -56,7 +56,7 @@ void ku_run_cpu(void){
 	unsigned char va;
     char sorf;
 	int addr, pa, i;
-
+	printf("asdasd\n");
 	do{
 		if(!current)
 			exit(0);
@@ -95,11 +95,12 @@ void ku_run_cpu(void){
 int main(int argc, char *argv[]){
 	/* System initialization */
 	ku_os_init();
-	printf("\nos_init success");
+	
 	/* Per-process initialization */
 	ku_proc_init(atoi(argv[1]), argv[2]);
 	printf("\n!!");
-	printf("\nproc_init success");
+	
+	
 	/* Process execution */
 	ku_run_cpu();
 	printf("\nrun_cpu success");

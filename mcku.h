@@ -45,8 +45,6 @@ void ku_proc_exit(char pid){
 
 
 void ku_proc_init(int nprocs, char *flist){
-	nProcess = nprocs;
-	pcbs = malloc(sizeof(struct pcb) * nprocs);
 	/*open text file*/
 	FILE *fp = fopen(flist, "r");
 	if(fp == NULL) {
@@ -54,6 +52,10 @@ void ku_proc_init(int nprocs, char *flist){
 		exit(0);
 	}
 
+	/*allocate pcbs for nprocs*/
+	nProcess = nprocs;
+	pcbs = malloc(sizeof(struct pcb) * nprocs);
+	
 	for(int i = 0; i < nProcess; ++i) {
 		/*read each text file's name*/
 		char *procFile = NULL;
@@ -65,19 +67,20 @@ void ku_proc_init(int nprocs, char *flist){
 			realloc(procFile, strlen(procFile) + 1);
 			procFile[strlen(procFile) - 1] = '\n';
 		}
-		
+		/*put elements in pcbs*/
 		pcbs[i].fd = fopen(procFile, "r");
 		pcbs[i].pid = i;
 		pcbs[i].pgtable = malloc(sizeof(pcbs->pgtable) *16);
 		pcbs[i].isExit = false;
 		
+		/*free character pointer*/
 		free(procFile);
 	}
 
 	/*initializing current*/
 	current = &pcbs[0];
 	ptbr = current->pgtable;
-	printf("!");
+
+	/*close first file*/
 	fclose(fp);
-	printf("!!!!!!!!!!");
 }
