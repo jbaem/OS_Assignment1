@@ -24,10 +24,10 @@ int restProcess;
 
 void ku_scheduler(char pid){
 	while(restProcess > 0) {
-		current = &pcbs[++pid % nProcess];
+		//current = &pcbs[++pid % nProcess];
 		
 		/*current is not null*/
-		if(current) {
+		if(current = &pcbs[++pid % nProcess]) {
 			ptbr = current->pgtable;
 			return;
 		}
