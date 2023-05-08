@@ -58,10 +58,10 @@ void ku_proc_init(int nprocs, char *flist){
 	for(int i = 0; i < nProcess; ++i) {
 		printf("\nstart proc init");
 		char *procFile = NULL;
-		size_t len = 0;
+		size_t len = 128;
 		getline(&procFile, &len, fp);
 
-		printf("%s",procFile);
+		printf("%s", procFile);
 		
 		/*
 		if(procFile[strlen(procFile) - 1] != '\n') {
