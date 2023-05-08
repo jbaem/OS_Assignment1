@@ -85,6 +85,7 @@ void ku_run_cpu(void){
 			}
 
 			printf("%d: %d -> %d (%c)\n", current->pid, va, pa, sorf);
+			printf("%x\n", (va & 0xF0)>>4);
 		}
 
 		kuos.sched(current->pid);
