@@ -7,7 +7,7 @@ struct pcb{
 	char pid;
 	FILE *fd;
 	char *pgtable;
-	
+	bool isEnd;
 	bool *freeList;
 };
 
@@ -19,7 +19,6 @@ extern char *ptbr;
 
 /*global*/
 struct pcb* pcbs;
-struct pcb pcbEnd = 0;
 int nProcess;
 int restProcess;
 
@@ -28,7 +27,7 @@ void ku_scheduler(char pid){
 	while(restProcess > 0) {
 		current = &pcbs[++pid % nProcess];
 		/*current is not null*/
-		if(current) {
+		if(!(current->isEnd)) {
 			ptbr = current->pgtable;
 			return;
 		}
@@ -48,8 +47,8 @@ void ku_proc_exit(char pid){
 	fclose(pcbs[pid].fd);
 	free(pcbs[pid].pgtable);
 	free(pcbs[pid].freeList);
-	&pcbs[pid] = pcbEnd;
-	
+	pcbs[pid].isEnd = true;
+
 	restProcess--;
 	if(!restProcess) {
 		free(pcbs);
@@ -90,6 +89,7 @@ void ku_proc_init(int nprocs, char *flist){
 		pcbs[pi].fd = fopen(procFile, "r");
 		pcbs[pi].pid = pi;
 		pcbs[pi].pgtable = malloc(sizeof(pcbs->pgtable) * PTE_COUNT);
+		pcbs[pi].isEnd = false;
 		pcbs[pi].freeList = malloc(sizeof(bool) * PTE_COUNT);
 		for(int i = 0; i < PTE_COUNT; ++i) pcbs[pi].freeList[i] = true;
 
