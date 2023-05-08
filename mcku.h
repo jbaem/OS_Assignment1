@@ -55,8 +55,8 @@ void ku_proc_init(int nprocs, char *flist){
 
 	char *procFile = NULL;
 	fgets(procFile, 20, fp);
-	*/
 	printf("\n%s", procFile);
+	*/
 
 	printf("\n %d",nProcess);
 	for(int i = 0; i < nProcess; ++i) {
