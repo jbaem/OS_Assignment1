@@ -47,15 +47,15 @@ void ku_proc_exit(char pid){
 void ku_proc_init(int nprocs, char *flist){
 	nProcess = nprocs;
 	pcbs = malloc(sizeof(struct pcb) * nprocs);
-	
+	/*open text file*/
 	FILE *fp = fopen(flist, "r");
 	if(fp == NULL) {
 		printf("Error: file open 1");
 		exit(0);
 	}
 
-	printf("\n%d",nProcess);
 	for(int i = 0; i < nProcess; ++i) {
+		/*read each text file's name*/
 		char *procFile = NULL;
 		size_t len = 128;
 		getline(&procFile, &len, fp);
@@ -76,8 +76,8 @@ void ku_proc_init(int nprocs, char *flist){
 
 	/*initializing current*/
 	current = &pcbs[0];
-	printf("!");
 	ptbr = current->pgtable;
-	printf("!!!!!");
+	printf("!");
 	fclose(fp);
+	printf("!!!!!!!!!!");
 }
