@@ -70,7 +70,8 @@ void ku_proc_init(int nprocs, char *flist){
 		}
 		
 		if(procFile[strlen(procFile) - 1] != '\n') {
-			procFile = appendNewLine(procFile);
+			realloc(procFile, strlen(procFile) + 1);
+			procFile[strlen(procFile) - 1] = '\n';
 		}
 		if(procFile[strlen(procFile) - 1] != '\n') printf("Error: not append new line");
 		//개행문자 지워주는 과정
@@ -91,5 +92,5 @@ void ku_proc_init(int nprocs, char *flist){
 }
 
 char *appendNewLine(char *str) {
-	
+	realloc(str)
 }
