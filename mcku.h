@@ -66,11 +66,10 @@ void ku_proc_init(int nprocs, char *flist){
 			exit(0);
 		}
 
-		/*add '\n' last index of string*/
-		if(procFile[strlen(procFile) - 1] != '\n') {
-			char * temp = realloc(procFile, strlen(procFile) + 1);
+		/*delete '\n' last index of string*/
+		if(procFile[strlen(procFile) - 1] == '\n') {
+			char * temp = realloc(procFile, strlen(procFile) - 1);
 			procFile = temp;
-			procFile[strlen(procFile) - 1] = '\n';
 		}
 
 		/*put elements in pcbs*/
@@ -89,6 +88,5 @@ void ku_proc_init(int nprocs, char *flist){
 
 	/*close first file*/
 	fclose(fp);
-	printf("file close clear\n");
 	return;
 }
