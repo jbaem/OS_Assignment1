@@ -22,7 +22,7 @@ int nProcess;
 // pid  1씩 올려서 current에 넣는 방식
 void ku_scheduler(char pid){
 	int count = 0;
-	/*
+	
 	do {
 		current = &ptbr[++pid % nProcess];
 		ptbr = current->pgtable;
@@ -32,7 +32,6 @@ void ku_scheduler(char pid){
 	if(count >= nProcess) {
 		exit(0);
 	}
-	*/
 }
 
 // 이게 맞나
