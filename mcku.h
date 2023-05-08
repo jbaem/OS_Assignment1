@@ -70,7 +70,7 @@ void ku_proc_init(int nprocs, char *flist){
 		printf("%s1", procFile);
 		if(procFile[strlen(procFile) - 1] == '\n') {
 			char * temp = realloc(procFile, strlen(procFile) - 2);
-			printf("\n%s==\n", temp);
+			free(procFile);
 			procFile = temp;
 		}
 		printf("%s2", procFile);
