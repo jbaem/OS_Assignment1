@@ -46,7 +46,7 @@ void ku_proc_exit(char pid){
 	fclose(pcbs[pid].fd);
 	free(pcbs[pid].pgtable);
 	free(pcbs[pid].freeList);
-	pcbs[pid] = NULL;
+	&pcbs[pid] = NULL;
 
 	restProcess--;	
 	return;
@@ -66,7 +66,7 @@ void ku_proc_init(int nprocs, char *flist){
 	restProcess = nprocs;
 	pcbs = malloc(sizeof(struct pcb) * nprocs);
 	
-	for(int pi = 0; pi < nProcess; ++i) {
+	for(int pi = 0; pi < nProcess; ++pi) {
 		/*read each text file's name*/
 		char *procFile = NULL;
 		size_t len = MAX_NAME_LENGTH;
