@@ -69,9 +69,9 @@ void ku_proc_init(int nprocs, char *flist){
 		}
 
 		/*delete '\n' last index of string*/
-		printf("%s1", procFile);
+		printf("\n%s1", procFile);
 		procFile = appendNewLine(procFile);
-		printf("%s2", procFile);
+		printf("\n%s2", procFile);
 
 		/*put elements in pcbs*/
 		pcbs[i].fd = fopen(procFile, "r");
