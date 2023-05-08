@@ -23,7 +23,7 @@ int nProcess;
 int restProcess;
 
 void ku_scheduler(char pid){
-	//printf("come in : %c\n", pid);
+	/*find remain jobs*/
 	while(restProcess > 0) {
 		current = &pcbs[++pid % nProcess];
 		/*current is not null*/
@@ -32,6 +32,7 @@ void ku_scheduler(char pid){
 			return;
 		}
 	}
+
 	/*all jobs finished*/
 	if(!restProcess) {
 		current = NULL;
@@ -47,17 +48,16 @@ void ku_pgfault_handler(char va) {
 
 
 void ku_proc_exit(char pid){
-	//printf("free : %c\n", pid);
 	/*free pcbs[pid]*/
 	fclose(pcbs[pid].fd);
 	free(pcbs[pid].pgtable);
 	free(pcbs[pid].freeList);
 	pcbs[pid].isEnd = true;
-
 	restProcess--;
+
+	/*all jobs finished*/
 	if(!restProcess) {
 		free(pcbs);
-		printf("\nfree all\n");
 	}
 	return;
 }
