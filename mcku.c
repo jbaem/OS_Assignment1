@@ -9,12 +9,15 @@
 
 struct pcb *current = 0;
 char *ptbr = 0;
+
+/// @brief 핸들러만 담은 구조체
 struct handlers{
        void (*sched)(char);
        void (*pgfault)(char);
        void (*exit)(char);
 }kuos;
 
+/// @brief 핸들러 구조체에 핸들러 함수 입력
 void ku_reg_handler(int flag, void (*func)(char)){
 	switch(flag){
 		case SCHED:
@@ -31,6 +34,15 @@ void ku_reg_handler(int flag, void (*func)(char)){
 	}
 }
 
+
+/* 
+va앞에 4자리 받아서 ptbr주소에 더해서 pte 주소로 만듦
+pte가 0이면 va 못 받았으니 return -1
+pte의 값 앞에 6자리를 받아서 뒤에 offset을 더해서 물리메모리를 만듦
+해당 물리 메모리 주소 return
+*/
+/// @param va 가상 메모리 주소 
+/// @return 물리 메모리 주소
 int ku_traverse(char va){
 	int pt_index, pa;
 	char *pte;
@@ -45,14 +57,16 @@ int ku_traverse(char va){
 	return pa;
 }
 
-
+/// @brief 각 핸들러를 구조체에 입력
 void ku_os_init(void){
 	ku_reg_handler(SCHED, ku_scheduler);
 	ku_reg_handler(PGFAULT, ku_pgfault_handler);
 	ku_reg_handler(EXIT, ku_proc_exit);
 }
 
-
+/// @brief 
+/*
+*/
 void ku_run_cpu(void){
 	unsigned char va;
     char sorf;
@@ -93,6 +107,10 @@ void ku_run_cpu(void){
 	}while(1);
 }
 
+/// @brief 
+/// @param argc 인자 개수
+/// @param argv 처음 file name
+/// @return 
 int main(int argc, char *argv[]){
 	/* System initialization */
 	ku_os_init();
