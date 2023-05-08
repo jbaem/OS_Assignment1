@@ -89,5 +89,6 @@ void ku_proc_init(int nprocs, char *flist){
 
 	/*close first file*/
 	fclose(fp);
+	printf("file close clear\n");
 	return;
 }
