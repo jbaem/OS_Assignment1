@@ -62,6 +62,7 @@ void ku_proc_init(int nprocs, char *flist){
 	fgets(procFile, 20, fp);
 	printf("\n%s", procFile);
 
+	/*
 	printf("\n %d",nProcess);
 	for(int i = 0; i < nProcess; ++i) {
 		printf("\nstart proc init");
@@ -86,6 +87,7 @@ void ku_proc_init(int nprocs, char *flist){
 
 	current = &pcbs[0];
 	ptbr = current->pgtable;
+	*/
 }
 
 // 개행문자가 들어있으면 지우고 아니면 그냥 리턴
