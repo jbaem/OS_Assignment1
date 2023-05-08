@@ -56,22 +56,26 @@ void ku_proc_init(int nprocs, char *flist){
 
 	printf("\n%d",nProcess);
 	for(int i = 0; i < nProcess; ++i) {
-		printf("\nstart proc init");
 		char *procFile = NULL;
 		size_t len = 128;
 		getline(&procFile, &len, fp);
-		printf("\n%s1", procFile);
+		
+		/*add '\n' last index of string*/
 		if(procFile[strlen(procFile) - 1] != '\n') {
 			realloc(procFile, strlen(procFile) + 1);
 			procFile[strlen(procFile) - 1] = '\n';
 		}
-		printf("\n%s2", procFile);
-
+		
+		printf("!\n");
 		pcbs[i].fd = fopen(procFile, "r");
+		printf("!!\n");
 		pcbs[i].pid = i;
+		printf("!!!\n");
 		pcbs[i].pgtable = malloc(sizeof(pcbs->pgtable) *16);
+		printf("!!!!\n");
 		pcbs[i].isExit = false;
-
+		printf("!!!!!\n");
+		
 		free(procFile);
 		printf("\nend proc init : %s", procFile);
 	}
