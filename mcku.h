@@ -44,7 +44,7 @@ void ku_proc_exit(char pid){
 	fclose(pcbs[pid].fd);
 	free(pcbs[pid].pgtable);
 	free(pcbs[pid].freeList);
-	&pcbs[pid] = NULL;
+	&pcbs[pid] = 0x0;
 
 	restProcess--;
 	if(!restProcess) {
