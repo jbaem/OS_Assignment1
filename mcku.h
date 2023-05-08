@@ -38,6 +38,7 @@ void ku_scheduler(char pid){
 void ku_pgfault_handler(char va){
 	int pt_index = (va & 0xF0) >> 4;
 	ptbr[pt_index] = 1;
+	return;
 }
 
 
@@ -46,6 +47,7 @@ void ku_proc_exit(char pid){
 	fclose(pcbs.fd);
 	free(pcbs[pid].pgtable);
 	restProcess--;
+	return;
 }
 
 
