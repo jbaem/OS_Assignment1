@@ -5,6 +5,7 @@
 #define PTE_COUNT 16
 #define FREE_LIST_SIZE 64
 #define MAX_NAME_LENGTH 256
+#define PHYSICAL_MEMORY 1024
 
 struct pcb{
 	char pid;
@@ -23,6 +24,7 @@ extern char *ptbr;
 struct pcb* pcbs;
 int *freeList;
 int freeIndex;
+char *physicalMemory;
 
 int nProcess;
 int restProcess;
@@ -47,7 +49,7 @@ void ku_scheduler(char pid){
 
 void ku_pgfault_handler(char va) {
 	if(freeIndex == FREE_LIST_SIZE) return;
-	
+
 	int vpn = (va & 0xF0) >> 4;
 	int pfn = 0;
 
@@ -58,7 +60,7 @@ void ku_pgfault_handler(char va) {
 
 		/*physical memory*/
 		fseek(current->fd, vpn * PAGE_SIZE, SEEK_SET);
-		fread(main_memory, pfn * PAGE_SIZE, PAGE_SIZE, 1, current->fd);
+		fread(physicalMemory, pfn * PAGE_SIZE, PAGE_SIZE, 1, current->fd);
 
 		/*pgtable update*/
 		current->pgtable[vpn] = pfn;
@@ -99,6 +101,7 @@ void ku_proc_init(int nprocs, char *flist){
 	pcbs = malloc(sizeof(struct pcb) * nprocs);
 	freeList = malloc(FREE_LIST_SIZE);
 	freeIndex = 0;
+	physicalMemory = malloc(sizeof(char) * PHYSICAL_MEMORY);
 
 	for(int pi = 0; pi < nProcess; ++pi) {
 		/*read each text file's name*/
