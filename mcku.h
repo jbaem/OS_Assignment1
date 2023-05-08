@@ -23,6 +23,7 @@ int nProcess;
 int restProcess;
 
 void ku_scheduler(char pid){
+	printf("come in : %c\n", pid);
 	while(restProcess > 0) {
 		current = &pcbs[++pid % nProcess];
 		/*current is not null*/
@@ -47,6 +48,7 @@ void ku_proc_exit(char pid){
 	free(pcbs[pid].pgtable);
 	free(pcbs[pid].freeList);
 	&pcbs[pid] = 0;
+	
 	restProcess--;
 	if(!restProcess) {
 		free(pcbs);
