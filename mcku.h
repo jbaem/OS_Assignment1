@@ -57,7 +57,7 @@ void ku_pgfault_handler(char va) {
 	if(pfn == -1) { 
 		return;
 	}
-	current->pgtable[vpn] = (pfn << 2) | 1;
+	current->pgtable[vpn] = (pfn << 2) | 0x01;
 }
 
 
