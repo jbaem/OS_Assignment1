@@ -171,6 +171,6 @@ char allocate_page() {
 void free_page(char pid) {
 	for(int i = 0; i < PTE_COUNT; ++i) {
 		if((pcbs[pid].pgtable[i]) == 0) continue;
-		freeList[((pcbs[pid].pgtable[i] & PFN_MASK)) >> 2) - 1] = 0;
+		freeList[((pcbs[pid].pgtable[i] & PFN_MASK) >> 2) - 1] = 0;
 	}
 }
