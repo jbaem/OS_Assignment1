@@ -58,9 +58,6 @@ void ku_pgfault_handler(char va) {
 	if(pfn == -1) { 
 		return;
 	}
-	printf("\nva: %x", va);
-	printf("\nvpn: %x" ,vpn);
-	printf("\npfn: %x\n", pfn);
 	ptbr[vpn] = (pfn << 2) | 0x01;
 }
 
@@ -164,7 +161,6 @@ char allocate_page() {
 	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
 		if(freeList[i] == 0) {
 			pfn = i + 1;
-			printf("allocate %x\n", pfn);
 			freeList[i] = pfn;
 			return pfn;
 		}
