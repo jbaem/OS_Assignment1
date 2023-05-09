@@ -49,7 +49,7 @@ void ku_scheduler(char pid){
 
 void ku_pgfault_handler(char va) {
 	int vpn = (va & VPN_MASK) >> 4;
-	current->pgtable[vpn] = 1;
+	ptbr[vpn] = 1;
 }
 
 
