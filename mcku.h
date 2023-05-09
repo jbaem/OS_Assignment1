@@ -58,6 +58,7 @@ void ku_pgfault_handler(char va) {
 	if(pfn == -1) { 
 		return;
 	}
+	printf("%d", pfn);
 	ptbr[vpn] = (pfn << 2) | 0x01;
 }
 
