@@ -17,6 +17,8 @@ struct pcb{
 /*function*/
 char *delete_LF(char * str);
 void init_free_list();
+int allocate_page();
+void free_page(char);
 
 /*extern mcku.c*/
 extern struct pcb *current;
@@ -149,6 +151,6 @@ int allocate_page() {
 	return pfn;
 }
 
-void free_page(int pfn) {
+void free_page(char pfn) {
 	freeList[--freeIndex] = pfn;
 }
