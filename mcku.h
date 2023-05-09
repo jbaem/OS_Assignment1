@@ -1,8 +1,10 @@
 #include<string.h>
 #include<stdbool.h>
+
 #define MAX_NAME_LENGTH 256
 #define PTE_COUNT 16
 #define FREE_LIST_SIZE 64
+#define VPN_MASK 0b11110000
 
 struct pcb{
 	char pid;
@@ -11,7 +13,11 @@ struct pcb{
 	bool isEnd;
 };
 
-char *deleteLF(char * str);
+/*function*/
+char *delete_LF(char * str);
+void init_free_list();
+int allocate_page();
+void free_page(int pfn);
 
 /*extern mcku.c*/
 extern struct pcb *current;
@@ -45,15 +51,10 @@ void ku_scheduler(char pid){
 }
 
 void ku_pgfault_handler(char va) {
-	int pt_index = (va & 0xF0) >> 4;
-	/*
-	TODO: FREE LIST
-	어떻게 할까?
-	
-	
-	*/
-	*(ptbr + pt_index) = 1;
-	return;
+	unsigned int vpn = (va & VPN_MASK) >> 4;
+	int pfn = freeList[freeIndex++];
+
+	current->pgtable[vpn] = pfn;
 }
 
 
@@ -80,12 +81,12 @@ void ku_proc_init(int nprocs, char *flist){
 		exit(0);
 	}
 
-	/*allocate pcbs & free list*/
+	/*initialize pcbs & free list*/
 	nProcess = nprocs;
 	restProcess = nprocs;
 	pcbs = malloc(sizeof(struct pcb) * nprocs);
-	freeList = malloc(FREE_LIST_SIZE);
-	freeIndex = 0;
+	
+	init_free_list();
 
 	for(int pi = 0; pi < nProcess; ++pi) {
 		/*read each text file's name*/
@@ -99,7 +100,7 @@ void ku_proc_init(int nprocs, char *flist){
 
 		/*delete '\n' last index of string*/
 		if(procFile[strlen(procFile) - 1] == '\n') {
-			procFile = deleteLF(procFile);
+			procFile = delete_LF(procFile);
 		}
 		
 		/*put elements in pcbs*/
@@ -121,8 +122,7 @@ void ku_proc_init(int nprocs, char *flist){
 	return;
 }
 
-/*delete Line Feed*/
-char *deleteLF(char *str) {
+char *delete_LF(char *str) {
 	char * result = malloc(strlen(str) - 1);
 	strncpy(result, str, strlen(str) - 1);
 	
@@ -132,4 +132,25 @@ char *deleteLF(char *str) {
 		exit(0);
 	}
 	return result;
+}
+
+void init_free_list() {
+	freeList = malloc(FREE_LIST_SIZE);
+	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
+		freeList[i] = i;
+	}
+
+}
+
+int allocate_page() {
+	if(freeIndex >= FREE_LIST_SIZE) {
+		return -1;
+	}
+	int pfn = freeList[freeIndex++];
+	
+	return pfn;
+}
+
+void free_page(int pfn) {
+	freeList[--freeIndex] = pfn;
 }
