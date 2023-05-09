@@ -5,6 +5,7 @@
 #define PTE_COUNT 16
 #define FREE_LIST_SIZE 64
 #define VPN_MASK 0b11110000
+#define PFN_MASK 0b11111100
 
 struct pcb{
 	char pid;
@@ -15,6 +16,7 @@ struct pcb{
 
 /*function*/
 char *delete_LF(char * str);
+void init_free_list();
 
 /*extern mcku.c*/
 extern struct pcb *current;
@@ -27,7 +29,7 @@ struct pcb* pcbs;
 
 /*free list*/
 char *freeList;
-char freeIndex;
+int freeIndex;
 
 void ku_scheduler(char pid){
 	/*find remain jobs*/
@@ -41,15 +43,16 @@ void ku_scheduler(char pid){
 	}
 
 	/*all jobs finished*/
-	if(!restProcess) {
+	if(restProcess == 0) {
 		current = NULL;
 	}
 	return;
 }
 
 void ku_pgfault_handler(char va) {
-	int vpn = (va & VPN_MASK) >> 4;
-	ptbr[vpn] = 1;
+	unsigned int vpn = va & VPN_MASK;
+	int pfn = allocate_page();
+	ptbr[vpn] = pfn;
 }
 
 
@@ -59,9 +62,10 @@ void ku_proc_exit(char pid){
 	free(pcbs[pid].pgtable);
 	pcbs[pid].isEnd = true;
 	restProcess--;
+	free_page(pid);
 
 	/*all jobs finished*/
-	if(!restProcess) {
+	if(restProcess == 0) {
 		free(pcbs);
 	}
 	return;
@@ -81,9 +85,8 @@ void ku_proc_init(int nprocs, char *flist){
 	restProcess = nprocs;
 	pcbs = malloc(sizeof(struct pcb) * nprocs);
 	
-	freeList = malloc(sizeof(char) * FREE_LIST_SIZE);
-	freeIndex = 0;
-
+	init_free_list();
+	
 	for(int pi = 0; pi < nProcess; ++pi) {
 		/*read each text file's name*/
 		char *procFile = NULL;
@@ -128,4 +131,24 @@ char *delete_LF(char *str) {
 		exit(0);
 	}
 	return result;
+}
+
+void init_free_list() {
+	freeList = malloc(sizeof(char) * FREE_LIST_SIZE);
+	
+	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
+		freeList[i] = i;
+	}
+	freeIndex = 0;
+
+	return;
+}
+
+int allocate_page() {
+	int pfn = freeList[freeIndex++];
+	return pfn;
+}
+
+void free_page(int pfn) {
+	freeList[--freeIndex] = pfn;
 }
