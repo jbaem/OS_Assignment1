@@ -19,7 +19,7 @@ char *delete_LF(char * str);
 void init_pcbs(int id, char *file);
 void init_free_list();
 char allocate_page();
-void free_page(char);
+void free_page(char pid);
 
 /*extern mcku.c*/
 extern struct pcb *current;
@@ -34,7 +34,7 @@ struct pcb* pcbs;
 char *freeList;
 
 void ku_scheduler(char pid){
-	/*find remain jobs*/
+	/*find remaining jobs*/
 	while(restProcess > 0) {
 		current = &pcbs[++pid % nProcess];
 		/*current is not finished*/
@@ -54,9 +54,9 @@ void ku_scheduler(char pid){
 void ku_pgfault_handler(char va) {
 	unsigned char vpn = (va & VPN_MASK) >> 4;
 	int pfn = allocate_page();
-	
-	if(pfn == -1) return;
-
+	if(pfn == -1) { 
+		return;
+	}
 	current->pgtable[vpn] = (pfn << 2) | 1;
 }
 
