@@ -48,10 +48,8 @@ void ku_scheduler(char pid){
 }
 
 void ku_pgfault_handler(char va) {
-	unsigned int vpn = (va & VPN_MASK) >> 4;
-	int pfn = freeList[freeIndex++];
-
-	current->pgtable[vpn] = pfn;
+	int vpn = (va & VPN_MASK) >> 4;
+	current->pgtable[vpn] = 1;
 }
 
 
