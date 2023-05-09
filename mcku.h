@@ -153,7 +153,7 @@ void init_free_list() {
 	freeList = malloc(sizeof(char) * FREE_LIST_SIZE);
 	
 	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
-		freeList[i] = -1;
+		freeList[i] = 0;
 	}
 
 	return;
@@ -162,8 +162,8 @@ void init_free_list() {
 char allocate_page() {
 	unsigned char pfn;
 	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
-		if(freeList[i] == -1) {
-			pfn = i;
+		if(freeList[i] == 0) {
+			pfn = i + 1;
 			printf("allocate %x\n", pfn);
 			return pfn;
 		}
