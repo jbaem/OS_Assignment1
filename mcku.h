@@ -17,7 +17,7 @@ struct pcb{
 /*function*/
 char *delete_LF(char * str);
 void init_free_list();
-int allocate_page();
+char allocate_page();
 void free_page(char);
 
 /*extern mcku.c*/
@@ -31,7 +31,6 @@ struct pcb* pcbs;
 
 /*free list*/
 char *freeList;
-int freeIndex;
 
 void ku_scheduler(char pid){
 	/*find remain jobs*/
@@ -52,19 +51,22 @@ void ku_scheduler(char pid){
 }
 
 void ku_pgfault_handler(char va) {
-	unsigned int vpn = va & VPN_MASK;
+	unsigned char vpn = (va & VPN_MASK) >> 4;
 	int pfn = allocate_page();
-	ptbr[vpn] = pfn;
+	
+	if(pfn == -1) return;
+
+	current->pgtable[vpn] = (pfn << 2) | 1;
 }
 
 
 void ku_proc_exit(char pid){
 	/*free pcbs[pid]*/
 	fclose(pcbs[pid].fd);
+	free_page(pid);
 	free(pcbs[pid].pgtable);
 	pcbs[pid].isEnd = true;
 	restProcess--;
-	free_page(pid);
 
 	/*all jobs finished*/
 	if(restProcess == 0) {
@@ -105,10 +107,7 @@ void ku_proc_init(int nprocs, char *flist){
 		}
 		
 		/*put elements in pcbs*/
-		pcbs[pi].fd = fopen(procFile, "r");
-		pcbs[pi].pid = pi;
-		pcbs[pi].pgtable = malloc(sizeof(pcbs->pgtable) * PTE_COUNT);
-		pcbs[pi].isEnd = false;
+		init_pcbs(pi, procFile);
 
 		/*free character pointer*/
 		free(procFile);
@@ -135,22 +134,40 @@ char *delete_LF(char *str) {
 	return result;
 }
 
+void init_pcbs(int id, char *file) {
+	pcbs[id].fd = fopen(file, "r");
+	pcbs[id].pid = id;
+	pcbs[id].pgtable = malloc(sizeof(pcbs->pgtable) * PTE_COUNT);
+	for(int i = 0; i < PTE_COUNT; ++i) {
+		pcbs[id].pgtable[i] = 0;
+	}
+	pcbs[id].isEnd = false;
+}
+
 void init_free_list() {
 	freeList = malloc(sizeof(char) * FREE_LIST_SIZE);
 	
 	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
-		freeList[i] = i;
+		freeList[i] = -1;
 	}
-	freeIndex = 0;
 
 	return;
 }
 
-int allocate_page() {
-	int pfn = freeList[freeIndex++];
-	return pfn;
+char allocate_page() {
+	unsigned char pfn;
+	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
+		if(freeList[i] == -1) {
+			pfn = i;
+			return pfn;
+		}
+	}
+	return -1;
 }
 
-void free_page(char pfn) {
-	freeList[--freeIndex] = pfn;
+void free_page(char pid) {
+	for(int i = 0; i < PTE_COUNT; ++i) {
+		if((pcbs[pid].pgtable[i]) == 0) continue;
+		freeList[(pcbs[pid].pgtable[i] & PFN_MASK) >> 2] = -1;
+	}
 }
