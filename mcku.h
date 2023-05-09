@@ -150,7 +150,7 @@ void init_free_list() {
 	freeList = malloc(sizeof(char) * FREE_LIST_SIZE);
 	
 	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
-		freeList[i] = 0;
+		freeList[i] = -1;
 	}
 
 	return;
@@ -159,8 +159,8 @@ void init_free_list() {
 char allocate_page() {
 	unsigned char pfn;
 	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
-		if(freeList[i] == 0) {
-			pfn = i + 1;
+		if(freeList[i] == -1) {
+			pfn = i;
 			freeList[i] = pfn;
 			return pfn;
 		}
@@ -171,6 +171,6 @@ char allocate_page() {
 void free_page(char pid) {
 	for(int i = 0; i < PTE_COUNT; ++i) {
 		if((pcbs[pid].pgtable[i]) == 0) continue;
-		freeList[((pcbs[pid].pgtable[i] & PFN_MASK) >> 2) - 1] = 0;
+		freeList[(pcbs[pid].pgtable[i] & PFN_MASK) >> 2] = 0;
 	}
 }
