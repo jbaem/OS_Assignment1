@@ -165,6 +165,7 @@ char allocate_page() {
 		if(freeList[i] == 0) {
 			pfn = i + 1;
 			printf("allocate %x\n", pfn);
+			freeList[i] = pfn;
 			return pfn;
 		}
 	}
