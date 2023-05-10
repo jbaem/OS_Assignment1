@@ -64,8 +64,9 @@ void ku_pgfault_handler(char va) {
 }
 
 
-void ku_proc_exit(char pid){
+void ku_proc_exit(char id){
 	/* free pcbs[pid] */
+	unsigned char pid = id;
 	fclose(pcbs[pid].fd);
 	free_page(pid);
 	free(pcbs[pid].pgtable);
@@ -139,13 +140,14 @@ char *delete_LF(char *str) {
 
 /* pcb of pcbs initialize */
 void init_pcbs(int id, char *file) {
-	pcbs[id].fd = fopen(file, "r");
-	pcbs[id].pid = id;
-	pcbs[id].pgtable = malloc(sizeof(pcbs->pgtable) * PTE_COUNT);
+	unsigned pid = id;
+	pcbs[pid].fd = fopen(file, "r");
+	pcbs[pid].pid = (char)(id & 0xFF);
+	pcbs[pid].pgtable = malloc(sizeof(pcbs->pgtable) * PTE_COUNT);
 	for(int i = 0; i < PTE_COUNT; ++i) {
-		pcbs[id].pgtable[i] = 0;
+		pcbs[pid].pgtable[i] = 0;
 	}
-	pcbs[id].isEnd = false;
+	pcbs[pid].isEnd = false;
 }
 
 /* free list : initialize */
@@ -173,9 +175,9 @@ int allocate_page() {
 }
 
 /* free list : find page and delete */
-void free_page(char pid) {
+void free_page(char id) {
+	unsigned char pid = id;
 	for(int i = 0; i < PTE_COUNT; ++i) {
-		if(pid < 0) pid += 128;
 		if((pcbs[pid].pgtable[i]) == 0) continue;
 		freeList[(pcbs[pid].pgtable[i] & PFN_MASK) >> 2] = -1;
 	}
