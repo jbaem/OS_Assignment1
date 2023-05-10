@@ -158,7 +158,7 @@ void init_free_list() {
 }
 
 /* free list : allocate page */
-unsigned char allocate_page() {
+char allocate_page() {
 	char pfn;
 	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
 		if(freeList[i] == -1) {
