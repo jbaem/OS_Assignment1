@@ -37,12 +37,10 @@ char *freeList;
 void ku_scheduler(char id){
 	/* find remaining jobs */
 	unsigned char pid = id;
-	printf("chage schedule %d -> ", pid);
 	while(restProcess > 0) {	
 		current = &pcbs[++pid % nProcess];
 		/* update : current is not finished */
 		if(!(current->isEnd)) {
-			printf("%d\n", pid);
 			ptbr = current->pgtable;
 			return;
 		}
@@ -50,14 +48,12 @@ void ku_scheduler(char id){
 
 	/* all jobs finished */
 	if(restProcess == 0) {
-		printf("end all\n");
 		current = NULL;
 	}
 	return;
 }
 
 void ku_pgfault_handler(char va) {
-	printf("page fault handler start: %d -> ", current->pid );
 	unsigned char vpn = (va & VPN_MASK) >> 4;
 	int tempPFN = allocate_page();
 	/* no free page frames */
@@ -66,7 +62,7 @@ void ku_pgfault_handler(char va) {
 	}
 	char pfn = tempPFN & BYTE_MASK;
 	ptbr[vpn] = (pfn << 2) | 0x01;
-	printf("%d\n", current->pid);
+	
 }
 
 
