@@ -83,9 +83,8 @@ void ku_proc_exit(char id){
 
 
 void ku_proc_init(int nprocs, char *flist){
-	if(nprocs <= 0) {
-		printf("Error: 0 processes");
-		exit(0);
+	if(nprocs == 0) {
+		return;
 	}
 	/* open text file */
 	FILE *fp = fopen(flist, "r");
@@ -131,6 +130,7 @@ void ku_proc_init(int nprocs, char *flist){
 	return;
 }
 
+/* delete Line Feed*/
 char *delete_LF(char *str) {
 	char * result = malloc(strlen(str) - 1);
 	strncpy(result, str, strlen(str) - 1);
