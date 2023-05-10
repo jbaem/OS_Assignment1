@@ -39,8 +39,7 @@ void ku_scheduler(char pid){
 	unsigned char temp = pid;
 	while(restProcess > 0) {
 		printf("change: %d ->", current->pid);
-		temp = ++temp % nProcess;
-		current = &pcbs[temp];
+		current = &pcbs[++temp];
 		printf(" %d\n", current->pid);
 		/* update : current is not finished */
 		if(!(current->isEnd)) {
