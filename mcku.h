@@ -37,10 +37,12 @@ char *freeList;
 void ku_scheduler(char id){
 	/* find remaining jobs */
 	unsigned char pid = id;
+	printf("chage schedule %d -> ", pid);
 	while(restProcess > 0) {		
 		current = &pcbs[++pid];
 		/* update : current is not finished */
 		if(!(current->isEnd)) {
+			printf("%d\n", pid);
 			ptbr = current->pgtable;
 			return;
 		}
@@ -48,6 +50,7 @@ void ku_scheduler(char id){
 
 	/* all jobs finished */
 	if(restProcess == 0) {
+		printf("end all\n");
 		current = NULL;
 	}
 	return;
@@ -85,6 +88,10 @@ void ku_proc_exit(char id){
 
 
 void ku_proc_init(int nprocs, char *flist){
+	if(nprocs <= 0) {
+		printf("Error: 0 processes");
+		exit(0);
+	}
 	/* open text file */
 	FILE *fp = fopen(flist, "r");
 	if(fp == NULL) {
