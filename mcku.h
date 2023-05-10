@@ -32,6 +32,7 @@ struct pcb* pcbs;
 
 /* free list */
 char *freeList;
+int count = 0;
 
 void ku_scheduler(char pid){
 	/* find remaining jobs */
@@ -71,7 +72,7 @@ void ku_proc_exit(char pid){
 	free(pcbs[pid].pgtable);
 	pcbs[pid].isEnd = true;
 	restProcess--;
-	printf(">>>>>>>>>>>>>>>>>>>>>>>>> exit pcb >>> %d\n", pid);
+	printf(">>>>>>>>>>>>>>>> exit pcb >>> %d  >>>remain: %d >>>>>> count: %d\n", pid, restProcess, ++count);
 	/* all jobs finished */
 	if(restProcess == 0) {
 		free(pcbs);
