@@ -14,37 +14,37 @@ struct pcb{
 	bool isEnd;
 };
 
-/*function*/
+/* function */
 char *delete_LF(char * str);
 void init_pcbs(int id, char *file);
 void init_free_list();
 char allocate_page();
 void free_page(char pid);
 
-/*extern mcku.c*/
+/* extern var mcku.c */
 extern struct pcb *current;
 extern char *ptbr;
 
-/*process*/
+/* process - pcb */
 int nProcess;
 int restProcess;
 struct pcb* pcbs;
 
-/*free list*/
+/* free list */
 char *freeList;
 
 void ku_scheduler(char pid){
-	/*find remaining jobs*/
+	/* find remaining jobs */
 	while(restProcess > 0) {
 		current = &pcbs[++pid % nProcess];
-		/*current is not finished*/
+		/* update : current is not finished */
 		if(!(current->isEnd)) {
 			ptbr = current->pgtable;
 			return;
 		}
 	}
 
-	/*all jobs finished*/
+	/* all jobs finished */
 	if(restProcess == 0) {
 		current = NULL;
 	}
@@ -54,7 +54,7 @@ void ku_scheduler(char pid){
 void ku_pgfault_handler(char va) {
 	unsigned char vpn = (va & VPN_MASK) >> 4;
 	char pfn = allocate_page();
-	
+	/* no free page frames */
 	if(pfn == -1) { 
 		return;
 	}
@@ -63,14 +63,14 @@ void ku_pgfault_handler(char va) {
 
 
 void ku_proc_exit(char pid){
-	/*free pcbs[pid]*/
+	/* free pcbs[pid] */
 	fclose(pcbs[pid].fd);
 	free_page(pid);
 	free(pcbs[pid].pgtable);
 	pcbs[pid].isEnd = true;
 	restProcess--;
 
-	/*all jobs finished*/
+	/* all jobs finished */
 	if(restProcess == 0) {
 		free(pcbs);
 	}
@@ -79,14 +79,14 @@ void ku_proc_exit(char pid){
 
 
 void ku_proc_init(int nprocs, char *flist){
-	/*open text file*/
+	/* open text file */
 	FILE *fp = fopen(flist, "r");
 	if(fp == NULL) {
 		printf("Error: process file open failed");
 		exit(0);
 	}
 
-	/*initialize pcbs & free list*/
+	/* initialize process & free list */
 	nProcess = nprocs;
 	restProcess = nprocs;
 	pcbs = malloc(sizeof(struct pcb) * nprocs);
@@ -94,7 +94,7 @@ void ku_proc_init(int nprocs, char *flist){
 	init_free_list();
 	
 	for(int pi = 0; pi < nProcess; ++pi) {
-		/*read each text file's name*/
+		/* read each text file's name */
 		char *procFile = NULL;
 		size_t len = MAX_NAME_LENGTH;
 		ssize_t read = getline(&procFile, &len, fp);
@@ -103,23 +103,22 @@ void ku_proc_init(int nprocs, char *flist){
 			exit(0);
 		}
 
-		/*delete '\n' last index of string*/
+		/* delete '\n' last index of string */
 		if(procFile[strlen(procFile) - 1] == '\n') {
 			procFile = delete_LF(procFile);
 		}
 		
-		/*put elements in pcbs*/
 		init_pcbs(pi, procFile);
 
-		/*free character pointer*/
+		/* free file name */
 		free(procFile);
 	}
 
-	/*initializing current*/
+	/* initializing current */
 	current = &pcbs[0];
 	ptbr = current->pgtable;
 
-	/*close first file*/
+	/* close first file */
 	fclose(fp);
 	return;
 }
@@ -128,7 +127,7 @@ char *delete_LF(char *str) {
 	char * result = malloc(strlen(str) - 1);
 	strncpy(result, str, strlen(str) - 1);
 	
-	/*not delete Line Feed*/
+	/* Line Feed is not deleted*/
 	if(strcmp(str, result) == 0) {
 		printf("Error: change string failed");
 		exit(0);
@@ -136,6 +135,7 @@ char *delete_LF(char *str) {
 	return result;
 }
 
+/* pcb of pcbs initialize */
 void init_pcbs(int id, char *file) {
 	pcbs[id].fd = fopen(file, "r");
 	pcbs[id].pid = id;
@@ -146,9 +146,10 @@ void init_pcbs(int id, char *file) {
 	pcbs[id].isEnd = false;
 }
 
+/* free list : initialize */
 void init_free_list() {
 	freeList = malloc(sizeof(char) * FREE_LIST_SIZE);
-	
+	/* not used space, value = -1 */
 	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
 		freeList[i] = -1;
 	}
@@ -156,6 +157,7 @@ void init_free_list() {
 	return;
 }
 
+/* free list : allocate page */
 char allocate_page() {
 	unsigned char pfn;
 	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
@@ -168,6 +170,7 @@ char allocate_page() {
 	return -1;
 }
 
+/* free list : find page and delete */
 void free_page(char pid) {
 	for(int i = 0; i < PTE_COUNT; ++i) {
 		if((pcbs[pid].pgtable[i]) == 0) continue;
