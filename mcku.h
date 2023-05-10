@@ -18,7 +18,7 @@ struct pcb{
 char *delete_LF(char * str);
 void init_pcbs(int id, char *file);
 void init_free_list();
-char allocate_page();
+int allocate_page();
 void free_page(char pid);
 
 /* extern var mcku.c */
@@ -161,7 +161,7 @@ void init_free_list() {
 }
 
 /* free list : allocate page */
-char allocate_page() {
+int allocate_page() {
 	unsigned char pfn;
 	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
 		if(freeList[i] == -1) {
