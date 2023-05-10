@@ -6,6 +6,7 @@
 #define FREE_LIST_SIZE 64
 #define VPN_MASK 0b11110000
 #define PFN_MASK 0b11111100
+#define BYTE_MASK 0b11111111
 
 struct pcb{
 	char pid;
@@ -33,11 +34,11 @@ struct pcb* pcbs;
 /* free list */
 char *freeList;
 
-void ku_scheduler(char pid){
+void ku_scheduler(char id){
 	/* find remaining jobs */
-	unsigned char tempPID = pid;
+	unsigned char pid = id;
 	while(restProcess > 0) {		
-		current = &pcbs[++tempPID];
+		current = &pcbs[++pid];
 		/* update : current is not finished */
 		if(!(current->isEnd)) {
 			ptbr = current->pgtable;
@@ -56,10 +57,10 @@ void ku_pgfault_handler(char va) {
 	unsigned char vpn = (va & VPN_MASK) >> 4;
 	int tempPFN = allocate_page();
 	/* no free page frames */
-	if(pfn == -1) { 
+	if(tempPFN == -1) { 
 		return;
 	}
-	char pfn = tempPFN;
+	char pfn = tempPFN & BYTE_MASK;
 	ptbr[vpn] = (pfn << 2) | 0x01;
 }
 
@@ -140,9 +141,9 @@ char *delete_LF(char *str) {
 
 /* pcb of pcbs initialize */
 void init_pcbs(int id, char *file) {
-	unsigned pid = id;
+	unsigned char pid = id & BYTE_MASK;
 	pcbs[pid].fd = fopen(file, "r");
-	pcbs[pid].pid = (char)(id & 0xFF);
+	pcbs[pid].pid = pid;
 	pcbs[pid].pgtable = malloc(sizeof(pcbs->pgtable) * PTE_COUNT);
 	for(int i = 0; i < PTE_COUNT; ++i) {
 		pcbs[pid].pgtable[i] = 0;
