@@ -78,7 +78,7 @@ void ku_run_cpu(void){
 
 				if(pa < 0){
 					/* No free page frames */
-					printf("no free page %d\n", current->pid);
+					printf(">>>>>>>>>>>>>>>>>>>>>no free page %d\n", current->pid);
 					kuos.exit(current->pid);
 					break;
 				}

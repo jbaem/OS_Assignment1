@@ -74,7 +74,7 @@ void ku_proc_exit(char id){
 	free(pcbs[pid].pgtable);
 	pcbs[pid].isEnd = true;
 	restProcess--;
-
+	printf("exit >>>>>>>>>>>>>>>>>> %d\n", id);
 	/* all jobs finished */
 	if(restProcess == 0) {
 		printf("end all\n");
