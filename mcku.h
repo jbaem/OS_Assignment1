@@ -1,134 +1,189 @@
+#include<string.h>
+#include<stdbool.h>
+
+#define MAX_NAME_LENGTH 256
+#define PTE_COUNT 16
+#define FREE_LIST_SIZE 64
+#define VPN_MASK 0b11110000
+#define PFN_MASK 0b11111100
+#define BYTE_MASK 0b11111111
+
 struct pcb{
 	char pid;
 	FILE *fd;
 	char *pgtable;
+	bool isEnd;
 };
 
-struct pcb *proc;
-int numprocs = 0;		// 처음에 생성된 process 수
-int validnprocs = 0;	// ready process의 수
+/* function */
+char *delete_LF(char * str);
+void init_pcbs(int id, char *file);
+void init_free_list();
+int allocate_page();
+void free_page(char pid);
+
+/* extern var mcku.c */
 extern struct pcb *current;
 extern char *ptbr;
 
-int freelist[64];
+/* process - pcb */
+int nProcess;
+int restProcess;
+struct pcb* pcbs;
 
-// int restpage = 64;
+/* free list */
+char *freeList;
 
-void ku_scheduler(char pid){
-	// 남은 프로세스가 하나도 없으면 current = 0으로 만들어서 종료...
-
-	unsigned char unsignedpid;
-	if (pid < 0) {
-		unsignedpid = 256 + pid;
-	}
-	else {
-		unsignedpid = pid;
-	}
-	if(validnprocs > 0) {
-		unsigned char newpid = (unsignedpid + 1) % numprocs;	
-		while (1) {
-			if (proc[newpid].fd != NULL) {
-				current = proc + newpid;
-				ptbr = current->pgtable;
-				break;
-			}
-			newpid = (newpid + 1) % numprocs;
+void ku_scheduler(char id){
+	/* find remaining jobs */
+	unsigned char pid = id;
+	while(restProcess > 0) {	
+		current = &pcbs[++pid % nProcess];
+		/* update : current is not finished */
+		if(!(current->isEnd)) {
+			ptbr = current->pgtable;
+			return;
 		}
 	}
-	else {
-		current = 0;
+
+	/* all jobs finished */
+	if(restProcess == 0) {
+		current = NULL;
 	}
+	return;
 }
 
-
-void ku_pgfault_handler(char pid){
-
-	// pid : virtual address that generates a page fault
-	// make free list (64 x 16 Bytes) -> don't need to really allocate a memory buffer
-	// Free list for 64 page frames : either linked list, array, or bitmap is fine
-	// do not support swapping
+void ku_pgfault_handler(char va) {
+	unsigned char vpn = (va & VPN_MASK) >> 4;
+	int tempPFN = allocate_page();
+	/* no free page frames */
+	if(tempPFN == -1) { 
+		return;
+	}
+	char pfn = tempPFN & BYTE_MASK;
+	ptbr[vpn] = (pfn << 2) | 0x01;
 	
-	// free list 비었으면 메모리 꽉 찬 거임 그냥 리턴.
-	int va = pid;
-	unsigned char vpn = (va & 0xF0) >> 4;
-	// char offset = va & 0x0F;
-	unsigned char pfn = 65;
-
-	// ptbr + vpn에 메모리 할당 (PFN 부여 및 Free List 관리)
-	// present bit -> 1로 바꿔주기
-	// pte 채우기
-	for (int i = 0; i < 64; i++) {
-		if (freelist[i] == 65) {
-			// 사용 가능
-			pfn = i;
-			freelist[i] = vpn;
-//			restpage--;
-			
-			current->pgtable[vpn] = (pfn << 2) | 0x01;
-			break;
-		}
-	}
-	if (pfn == 65)
-		current->pgtable[vpn] = 0;
 }
 
-void ku_proc_exit(char pid){
-	printf("exit >>>>>>>>>>>>>>>>>>>>>>>> %d\n", pid);
-	unsigned char unsignedpid;
-	if (pid < 0) {
-		unsignedpid = 256 + pid;
-	}
-	else {
-		unsignedpid = pid;
-	}
 
-	fclose(proc[unsignedpid].fd);
-	proc[unsignedpid].fd = NULL;
-
-	for (int i = 0; i < 16; i++) {
-		if (proc[unsignedpid].pgtable[i] != 0) {
-			unsigned char pfn = (proc[unsignedpid].pgtable[i] & 0xFC) >> 2;
-			freelist[pfn] = 65;
-//			restpage++;
-		}
+void ku_proc_exit(char id){
+	/* free pcbs[pid] */
+	unsigned char pid = id;
+	fclose(pcbs[pid].fd);
+	free_page(pid);
+	free(pcbs[pid].pgtable);
+	pcbs[pid].isEnd = true;
+	restProcess--;
+	/* all jobs finished */
+	if(restProcess == 0) {
+		free(pcbs);
 	}
-	// proc[pid].pgtable에 할당된 메모리 정리
-	if (proc[unsignedpid].pgtable != NULL){
-		
-		free(proc[unsignedpid].pgtable);
-		proc[unsignedpid].pgtable = NULL;
-	}
-	validnprocs--;
+	return;
 }
 
 
 void ku_proc_init(int nprocs, char *flist){
+	if(nprocs <= 0) {
+		printf("Error: 0 processes");
+		exit(0);
+	}
+	/* open text file */
+	FILE *fp = fopen(flist, "r");
+	if(fp == NULL) {
+		printf("Error: process file open failed");
+		exit(0);
+	}
 
-	if (nprocs == 0) return;
-	// 배열 proc에 nprocs만큼 배열 크기 할당
-	proc = (struct pcb*)malloc(sizeof(struct pcb) * nprocs);
-	numprocs = nprocs;
+	/* initialize process & free list */
+	nProcess = nprocs;
+	restProcess = nprocs;
+	pcbs = malloc(sizeof(struct pcb) * nprocs);
+	
+	init_free_list();
+	
+	for(int pi = 0; pi < nProcess; ++pi) {
+		/* read each text file's name */
+		char *procFile = NULL;
+		size_t len = MAX_NAME_LENGTH;
+		ssize_t read = getline(&procFile, &len, fp);
+		if(read == -1) {
+			printf("Error: file get line failed");
+			exit(0);
+		}
 
-	FILE *fp;
-	fp = fopen(flist, "r");
-	if (fp != NULL) {
-		char filename[60];
-		for (int i = 0; i < nprocs; i++) {
-			fscanf(fp, "%s", filename);
-			proc[i].pid = i;
-			proc[i].fd = fopen(filename, "r");
-			if (proc[i].fd == NULL) printf("pid : %d hello~\n", i);
-			// pgtable -> Linear Page table 0으로 채워서 생성
-			proc[i].pgtable = (char *)calloc(16, sizeof(char));
-			validnprocs++;
+		/* delete '\n' last index of string */
+		if(procFile[strlen(procFile) - 1] == '\n') {
+			procFile = delete_LF(procFile);
+		}
+		
+		init_pcbs(pi, procFile);
+
+		/* free file name */
+		free(procFile);
+	}
+
+	/* initializing current */
+	current = &pcbs[0];
+	ptbr = current->pgtable;
+
+	/* close first file */
+	fclose(fp);
+	return;
+}
+
+char *delete_LF(char *str) {
+	char * result = malloc(strlen(str) - 1);
+	strncpy(result, str, strlen(str) - 1);
+	
+	/* Line Feed is not deleted*/
+	if(strcmp(str, result) == 0) {
+		printf("Error: change string failed");
+		exit(0);
+	}
+	return result;
+}
+
+/* pcb of pcbs initialize */
+void init_pcbs(int id, char *file) {
+	unsigned char pid = id & BYTE_MASK;
+	pcbs[pid].fd = fopen(file, "r");
+	pcbs[pid].pid = pid;
+	pcbs[pid].pgtable = malloc(sizeof(pcbs->pgtable) * PTE_COUNT);
+	for(int i = 0; i < PTE_COUNT; ++i) {
+		pcbs[pid].pgtable[i] = 0;
+	}
+	pcbs[pid].isEnd = false;
+}
+
+/* free list : initialize */
+void init_free_list() {
+	freeList = malloc(sizeof(char) * FREE_LIST_SIZE);
+	/* not used space, value = -1 */
+	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
+		freeList[i] = -1;
+	}
+
+	return;
+}
+
+/* free list : allocate page */
+int allocate_page() {
+	unsigned char pfn;
+	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
+		if(freeList[i] == -1) {
+			pfn = i;
+			freeList[i] = pfn;
+			return pfn;
 		}
 	}
-	fclose(fp);
+	return -1;
+}
 
-	for (int i = 0; i < 64; i++) {
-		freelist[i] = 65;
+/* free list : find page and delete */
+void free_page(char id) {
+	unsigned char pid = id;
+	for(int i = 0; i < PTE_COUNT; ++i) {
+		if((pcbs[pid].pgtable[i]) == 0) continue;
+		freeList[(pcbs[pid].pgtable[i] & PFN_MASK) >> 2] = -1;
 	}
-
-	current = proc;
-	ptbr = current->pgtable;
 }
