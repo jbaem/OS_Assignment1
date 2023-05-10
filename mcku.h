@@ -62,7 +62,7 @@ void ku_pgfault_handler(char va) {
 	if(temp == -1) { 
 		return;
 	}
-	char pfn = (temp & PFN_MASK) >> 2;
+	unsigned char pfn = (temp & PFN_MASK) >> 2;
 	ptbr[vpn] = (pfn << 2) | 0x01;
 }
 
