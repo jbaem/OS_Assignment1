@@ -38,8 +38,8 @@ void ku_scheduler(char id){
 	/* find remaining jobs */
 	unsigned char pid = id;
 	printf("chage schedule %d -> ", pid);
-	while(restProcess > 0) {		
-		current = &pcbs[++pid];
+	while(restProcess > 0) {	
+		current = &pcbs[++pid % nProcess];
 		/* update : current is not finished */
 		if(!(current->isEnd)) {
 			printf("%d\n", pid);
