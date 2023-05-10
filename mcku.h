@@ -57,11 +57,12 @@ void ku_scheduler(char pid){
 
 void ku_pgfault_handler(char va) {
 	unsigned char vpn = (va & VPN_MASK) >> 4;
-	char pfn = allocate_page();
+	int temp = allocate_page();
 	/* no free page frames */
-	if(pfn == -1) { 
+	if(temp == -1) { 
 		return;
 	}
+	char pfn = (temp & PFN_MASK) >> 2;
 	ptbr[vpn] = (pfn << 2) | 0x01;
 }
 
@@ -162,8 +163,8 @@ void init_free_list() {
 }
 
 /* free list : allocate page */
-char allocate_page() {
-	char pfn;
+int allocate_page() {
+	int pfn;
 	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
 		if(freeList[i] == -1) {
 			pfn = i;
