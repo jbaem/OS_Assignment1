@@ -18,7 +18,7 @@ struct pcb{
 char *delete_LF(char * str);
 void init_pcbs(int id, char *file);
 void init_free_list();
-char allocate_page();
+unsigned char allocate_page();
 void free_page(char pid);
 
 /* extern var mcku.c */
