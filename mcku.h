@@ -36,10 +36,11 @@ int count = 0;
 
 void ku_scheduler(char pid){
 	/* find remaining jobs */
+	unsigned char temp = pid;
 	while(restProcess > 0) {
 		printf("change: %d ->", current->pid);
-		pid = ++pid % nProcess;
-		current = &pcbs[pid];
+		temp = ++temp % nProcess;
+		current = &pcbs[temp];
 		printf(" %d\n", current->pid);
 		/* update : current is not finished */
 		if(!(current->isEnd)) {
