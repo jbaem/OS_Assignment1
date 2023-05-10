@@ -32,12 +32,15 @@ struct pcb* pcbs;
 
 /* free list */
 char *freeList;
+int count = 0;
 
 void ku_scheduler(char pid){
 	/* find remaining jobs */
 	unsigned char tempPID = pid;
 	while(restProcess > 0) {
+		printf("change: %d ->", current->pid);
 		current = &pcbs[++tempPID];
+		printf(" %d\n", current->pid);
 		/* update : current is not finished */
 		if(!(current->isEnd)) {
 			ptbr = current->pgtable;
@@ -54,25 +57,24 @@ void ku_scheduler(char pid){
 
 void ku_pgfault_handler(char va) {
 	unsigned char vpn = (va & VPN_MASK) >> 4;
-	int tempPFN = allocate_page();
+	int temp = allocate_page();
 	/* no free page frames */
-	if(tempPFN == -1) { 
+	if(temp == -1) { 
 		return;
 	}
-	char pfn = (tempPFN & PFN_MASK) >> 2;
+	unsigned char pfn = (temp & PFN_MASK) >> 2;
 	ptbr[vpn] = (pfn << 2) | 0x01;
 }
 
 
 void ku_proc_exit(char pid){
 	/* free pcbs[pid] */
-	unsigned char tempPID = pid;
-	fclose(pcbs[tempPID].fd);
-	free_page(tempPID);
-	free(pcbs[tempPID].pgtable);
-	pcbs[tempPID].isEnd = true;
+	fclose(pcbs[pid].fd);
+	free_page(pid);
+	free(pcbs[pid].pgtable);
+	pcbs[pid].isEnd = true;
 	restProcess--;
-
+	printf(">>>>>>>>>>>>>>>> exit pcb >>> %d  >>>remain: %d >>>>>> count: %d\n", pid, restProcess, ++count);
 	/* all jobs finished */
 	if(restProcess == 0) {
 		free(pcbs);
@@ -162,7 +164,7 @@ void init_free_list() {
 
 /* free list : allocate page */
 int allocate_page() {
-	unsigned char pfn;
+	int pfn;
 	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
 		if(freeList[i] == -1) {
 			pfn = i;
@@ -175,9 +177,8 @@ int allocate_page() {
 
 /* free list : find page and delete */
 void free_page(char pid) {
-	unsigned char tempPID = pid;
 	for(int i = 0; i < PTE_COUNT; ++i) {
-		if((pcbs[tempPID].pgtable[i]) == 0) continue;
-		freeList[(pcbs[tempPID].pgtable[i] & PFN_MASK) >> 2] = -1;
+		if((pcbs[pid].pgtable[i]) == 0) continue;
+		freeList[(pcbs[pid].pgtable[i] & PFN_MASK) >> 2] = -1;
 	}
 }
