@@ -18,7 +18,7 @@ struct pcb{
 char *delete_LF(char * str);
 void init_pcbs(int id, char *file);
 void init_free_list();
-unsigned char allocate_page();
+char allocate_page();
 void free_page(char pid);
 
 /* extern var mcku.c */
@@ -53,7 +53,7 @@ void ku_scheduler(char pid){
 
 void ku_pgfault_handler(char va) {
 	unsigned char vpn = (va & VPN_MASK) >> 4;
-	unsigned char pfn = allocate_page();
+	pfn = allocate_page();
 	/* no free page frames */
 	if(pfn == -1) { 
 		return;
@@ -159,7 +159,7 @@ void init_free_list() {
 
 /* free list : allocate page */
 unsigned char allocate_page() {
-	unsigned char pfn;
+	char pfn;
 	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
 		if(freeList[i] == -1) {
 			pfn = i;
