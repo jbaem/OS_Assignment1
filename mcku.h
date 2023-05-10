@@ -36,7 +36,9 @@ char *freeList;
 void ku_scheduler(char pid){
 	/* find remaining jobs */
 	while(restProcess > 0) {
+		printf("change: %d ->", current->pid);
 		current = &pcbs[++pid % nProcess];
+		printf(" %d\n", current->pid);
 		/* update : current is not finished */
 		if(!(current->isEnd)) {
 			ptbr = current->pgtable;
