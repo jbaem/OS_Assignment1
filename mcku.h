@@ -77,6 +77,7 @@ void ku_proc_exit(char id){
 
 	/* all jobs finished */
 	if(restProcess == 0) {
+		printf("end all");
 		free(pcbs);
 	}
 	return;
