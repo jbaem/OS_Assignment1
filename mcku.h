@@ -73,7 +73,7 @@ void ku_pgfault_handler(char pid){
 }
 
 void ku_proc_exit(char pid){
-	
+	printf("exit >>>>>>>>>>>>>>>>>>>>>>>> %d\n", pid);
 	unsigned char unsignedpid;
 	if (pid < 0) {
 		unsignedpid = 256 + pid;
