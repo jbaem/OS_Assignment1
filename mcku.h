@@ -18,7 +18,7 @@ struct pcb{
 char *delete_LF(char * str);
 void init_pcbs(int id, char *file);
 void init_free_list();
-char allocate_page();
+int allocate_page();
 void free_page(char pid);
 
 /* extern var mcku.c */
@@ -35,8 +35,9 @@ char *freeList;
 
 void ku_scheduler(char pid){
 	/* find remaining jobs */
-	while(restProcess > 0) {
-		current = &pcbs[++pid % nProcess];
+	unsigned char tempPID = pid;
+	while(restProcess > 0) {		
+		current = &pcbs[++tempPID];
 		/* update : current is not finished */
 		if(!(current->isEnd)) {
 			ptbr = current->pgtable;
@@ -53,11 +54,12 @@ void ku_scheduler(char pid){
 
 void ku_pgfault_handler(char va) {
 	unsigned char vpn = (va & VPN_MASK) >> 4;
-	char pfn = allocate_page();
+	int tempPFN = allocate_page();
 	/* no free page frames */
 	if(pfn == -1) { 
 		return;
 	}
+	char pfn = tempPFN;
 	ptbr[vpn] = (pfn << 2) | 0x01;
 }
 
@@ -158,7 +160,7 @@ void init_free_list() {
 }
 
 /* free list : allocate page */
-char allocate_page() {
+int allocate_page() {
 	unsigned char pfn;
 	for(int i = 0; i < FREE_LIST_SIZE; ++i) {
 		if(freeList[i] == -1) {
@@ -173,6 +175,7 @@ char allocate_page() {
 /* free list : find page and delete */
 void free_page(char pid) {
 	for(int i = 0; i < PTE_COUNT; ++i) {
+		if(pid < 0) pid += 128;
 		if((pcbs[pid].pgtable[i]) == 0) continue;
 		freeList[(pcbs[pid].pgtable[i] & PFN_MASK) >> 2] = -1;
 	}
