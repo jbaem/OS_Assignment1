@@ -54,6 +54,7 @@ void ku_scheduler(char id){
 }
 
 void ku_pgfault_handler(char va) {
+	printf("page fault handler start: %d -> ", currnet->pid );
 	unsigned char vpn = (va & VPN_MASK) >> 4;
 	int tempPFN = allocate_page();
 	/* no free page frames */
@@ -62,6 +63,7 @@ void ku_pgfault_handler(char va) {
 	}
 	char pfn = tempPFN & BYTE_MASK;
 	ptbr[vpn] = (pfn << 2) | 0x01;
+	printf("%d\n", current->pid);
 }
 
 
